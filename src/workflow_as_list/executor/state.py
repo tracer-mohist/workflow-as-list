@@ -135,9 +135,7 @@ class Executor:
         execution.updated_at = datetime.utcnow()  # type: ignore
         self._save_execution(execution)
 
-    def get_next_step(
-        self, execution: Execution, parser: object
-    ) -> dict | None:
+    def get_next_step(self, execution: Execution, parser: object) -> dict | None:
         """Get next step for Agent (progressive exposure).
 
         Returns None if execution is complete.

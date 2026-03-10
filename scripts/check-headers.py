@@ -43,6 +43,7 @@ RULES = {
 # LOGGING (LogLight Style)
 # =============================================================================
 
+
 class Log:
     """Simple logging utility with LogLight-style output."""
 
