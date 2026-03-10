@@ -1,7 +1,10 @@
-# .github/workflows/release.yml
 # Release Workflow
 # Triggers: push tags (v*)
 # NOTE: Automated version bumping and GitHub Releases via python-semantic-release
+#
+# Prerequisites:
+# - test + lint must pass before tagging (enforced by branch protection)
+# - Release assumes test + lint already passed on merge
 
 name: Release
 
@@ -9,6 +12,10 @@ on:
   push:
     tags:
       - 'v*'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -33,15 +40,6 @@ jobs:
 
       - name: Install dependencies
         run: uv sync --frozen
-
-      - name: Run tests
-        run: uv run pytest -v
-
-      - name: Run Ruff linter
-        run: uv run ruff check .
-
-      - name: Check formatting
-        run: uv run ruff format --check .
 
       - name: Python Semantic Release
         env:

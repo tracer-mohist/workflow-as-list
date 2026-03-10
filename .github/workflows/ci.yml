@@ -1,4 +1,3 @@
-# .github/workflows/ci.yml
 # CI Workflow
 # Triggers: push to main, pull requests to main
 # NOTE: Follows Limited Testing Strategy - test efficiency over coverage
@@ -6,10 +5,14 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
