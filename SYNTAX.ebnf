@@ -1,0 +1,178 @@
+(* ========================================================================= *)
+(* WORKFLOWASLIST FORMAL SYNTAX SPECIFICATION                                *)
+(* ========================================================================= *)
+(*
+   REFERENCE: ISO/IEC 14977:1996(E) - Extended Backus-Naur Form
+   PURPOSE: Formal syntax definition for WorkflowAsList DSL
+   AUTHOR: Tracer (迹，Ji)
+   DATE: 2026-03-08
+   LICENSE: MIT
+
+   NOTE: This EBNF specification is for documentation only.
+         WorkflowAsList requires no parser - LLM reads and follows directly.
+
+   DESIGN PRINCIPLES:
+   - Concise (Information Theory): Remove redundancy, preserve meaning
+   - Practical (Set Theory): Bounded scope, minimal complete
+   - Elegant (Logical Flow): Logical coherence, consistent ordering
+*)
+
+(* ========================================================================= *)
+(* SECTION 1: CORE STRUCTURE                                                  *)
+(* ========================================================================= *)
+
+(* A workflow is a sequence of lines (0 or more) *)
+workflow = { line } ;
+
+(* Each line ends with end-of-line marker *)
+line = line_content , eol ;
+
+(* EOL supports Unix and Windows line endings *)
+eol = "\n" | "\r\n" ;
+
+(* ========================================================================= *)
+(* SECTION 2: LINE CONTENT                                                    *)
+(* ========================================================================= *)
+
+(* Line content consists of: optional indent, optional tag, content text, optional jump *)
+line_content = indent , [ tag ] , content_text , [ jump ] | import_statement ;
+
+(* Indentation: 0 or more levels, each level is exactly 2 spaces *)
+(* NOTE: Indent defines nesting hierarchy (sub-tasks) *)
+indent = { "  " } ;
+
+(* ========================================================================= *)
+(* SECTION 3: TAG SYNTAX                                                      *)
+(* ========================================================================= *)
+
+(* Tag: identifier enclosed in parentheses *)
+(* REFERENCE: Tag universality - can modify any line type *)
+tag = "(" , identifier , ")" ;
+
+(* Identifier: starts with letter, followed by letters/digits/hyphens *)
+(* NOTE: ASCII only, no Unicode in identifiers for compatibility *)
+identifier = letter , { letter | digit | "-" } ;
+
+(* Letter: uppercase or lowercase ASCII letters *)
+letter = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M"
+         | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z"
+         | "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m"
+         | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z" ;
+
+(* Digit: 0-9 *)
+digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+
+(* ========================================================================= *)
+(* SECTION 4: CONTENT TEXT                                                    *)
+(* ========================================================================= *)
+
+(* Content text: any characters except newline *)
+(* NOTE: This is the actual task description or instruction *)
+content_text = { character } ;
+
+(* Character: any printable ASCII character (excluding newline) *)
+character = letter | digit | symbol | " " ;
+
+(* Symbol: punctuation and special characters *)
+symbol = "!" | "\"" | "#" | "$" | "%" | "&" | "'" | "(" | ")" | "*" | "+" | ","
+         | "-" | "." | "/" | ":" | ";" | "<" | "=" | ">" | "?" | "@" | "[" 
+         | "\\" | "]" | "^" | "_" | "`" | "{" | "|" | "}" | "~" ;
+
+(* ========================================================================= *)
+(* SECTION 5: JUMP SYNTAX (CONTROL FLOW)                                      *)
+(* ========================================================================= *)
+
+(* Jump: conditional loop back to tagged item *)
+(* FORMAT: @tag[N]: condition? *)
+(* REFERENCE: Enables bounded iteration (max N times) *)
+jump = "@" , identifier , "[" , max_iterations , "]" , ":" , condition ;
+
+(* Max iterations: positive integer (1 or more) *)
+(* NOTE: Prevents infinite loops *)
+max_iterations = digit_excluding_zero , { digit } ;
+
+digit_excluding_zero = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+
+(* Condition: question or boolean expression *)
+(* NOTE: LLM evaluates condition semantically, not syntactically *)
+condition = { character - "?" } , "?" ;
+
+(* ========================================================================= *)
+(* SECTION 6: IMPORT STATEMENT                                                *)
+(* ========================================================================= *)
+
+(* Import: includes external workflow file or URL *)
+(* FORMAT: import: path *)
+(* REFERENCE: Enables modularity, reuse, and distributed workflows *)
+import_statement = "import:" , path ;
+
+(* Path: file path (relative/absolute) OR network URL *)
+(* NOTE: Relative paths resolved from current workflow location *)
+(* NOTE: URLs must start with http:// or https:// *)
+path = local_path | remote_url ;
+
+(* Local path: relative or absolute file system path *)
+(* TIP: Use ./ for relative, / for absolute *)
+local_path = { path_character } ;
+
+path_character = letter | digit | symbol | "/" | "." | "_" | "-" ;
+
+(* Remote URL: HTTP/HTTPS network location *)
+(* SECURITY NOTE: LLM should validate URL trustworthiness before fetching *)
+(* TIP: Use HTTPS for security, avoid HTTP in production *)
+remote_url = url_scheme , "://" , url_authority , { url_path_character } ;
+
+url_scheme = "http" | "https" ;
+
+url_authority = { letter | digit | "." | "-" } ;
+
+url_path_character = letter | digit | "/" | "." | "_" | "-" | "~" | ":" | "@" | "!" | "$" | "&" | "'" | "(" | ")" | "*" | "+" | "," | ";" | "=" ;
+
+(* ========================================================================= *)
+(* SECTION 7: CONSTRAINTS AND RULES                                           *)
+(* ========================================================================= *)
+
+(* RULE 1: List item - every line starts with "- " *)
+(* NOTE: This is enforced by content_text starting after "- " *)
+list_marker = "- " ;
+
+(* RULE 2: Nested content - indent by 2 spaces per level *)
+(* NOTE: Already defined in 'indent' rule above *)
+
+(* RULE 3: Tag universality - tag can appear on any line type *)
+(* NOTE: Already supported by line_content structure *)
+
+(* RULE 4: Jump references tag - jump target must exist *)
+(* TIP: LLM validates tag existence during execution *)
+
+(* RULE 5: Import path must be valid file or URL *)
+(* TIP: LLM checks file accessibility or URL reachability during import *)
+(* SECURITY: Validate URL trustworthiness before fetching remote content *)
+
+(* ========================================================================= *)
+(* SECTION 8: EXAMPLES (ANNOTATED)                                            *)
+(* ========================================================================= *)
+
+(* EXAMPLE 1: Simple workflow
+   workflow = 
+     line("- Read project structure") ,
+     line("  - Read directory: ls -la") ,
+     line("  - Read entry point: cat package.json")
+*)
+
+(* EXAMPLE 2: Workflow with tag and jump
+   workflow =
+     line("- (analyze) Analyze code") ,
+     line("  - Check for errors") ,
+     line("- @analyze[3]: Errors fixed?")
+*)
+
+(* EXAMPLE 3: Workflow with import
+   workflow =
+     line("import: ./common/setup.workflow.list") ,
+     line("- Run main task")
+*)
+
+(* ========================================================================= *)
+(* END OF SPECIFICATION                                                       *)
+(* ========================================================================= *)

@@ -1,0 +1,8 @@
+- (start) Read project structure
+ - Read directory: ls -la
+ - Read entry point: cat package.json
+ - (analyze) Analyze dependencies
+
+- @analyze[2]: Dependencies clear?
+
+- Generate summary

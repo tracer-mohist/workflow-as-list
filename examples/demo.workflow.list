@@ -1,0 +1,19 @@
+- (start) Initialize project analysis workflow
+ - Read project structure with ls command
+ - Identify main entry point file
+ - Analyze dependencies and imports
+ - (analyze) Review package configuration
+ - Check for test coverage reports
+ - Generate architecture diagram notes
+- (validate) Validate findings
+ - Compare structure with expected layout
+ - Document deviations or concerns
+ - Prepare summary report for review
+- @validate[1]: Requirements met
+- (report) Generate final analysis
+ - Include dependency graph
+ - List potential improvements
+ - Suggest refactoring opportunities
+ - Export findings to documentation
+- @analyze[2]: Need deeper inspection
+- Complete workflow execution now

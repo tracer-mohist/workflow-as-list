@@ -1,0 +1,127 @@
+<!-- AGENTS.md -->
+# AGENTS.md - WorkflowAsList Project Guide
+
+Purpose: Project architecture and development conventions.
+
+---
+
+## Architecture Overview
+
+```
+workflow-as-list/
+├── src/workflow_as_list/    # Source code package
+│   ├── __init__.py
+│   ├── cli.py               # Typer CLI (7 subcommands)
+│   ├── server.py            # FastAPI HTTP server
+│   ├── executor.py          # Core interpreter
+│   ├── security.py          # 7-layer security checks
+│   ├── models.py            # Pydantic data models
+│   ├── state.py             # State management (registry, executions)
+│   └── config.py            # Configuration loading (INI)
+│
+├── docs/                    # Design and research docs
+├── examples/                # Sample workflows (TBD)
+├── pyproject.toml           # Project metadata + dependencies
+└── AGENTS.md                # This file
+```
+
+---
+
+## Development Conventions
+
+### 360-Line Rule
+
+When a file exceeds 360 lines:
+- Convert file to directory (package)
+- Split by functionality into submodules
+- Original file becomes `__init__.py` with exports
+
+Example:
+```
+cli.py (360+ lines) → cli/
+                       ├── __init__.py
+                       ├── check.py
+                       ├── approve.py
+                       └── ...
+```
+
+---
+
+### Code Style
+
+**Comments:**
+- Line comments at critical logic points
+- Explain intent (why), not mechanics (what)
+- Avoid docstrings for every function
+
+**Types:**
+- Type annotations required for all functions
+- Pydantic models for data structures
+
+**Naming:**
+- snake_case for functions/variables
+- PascalCase for classes
+- UPPERCASE for constants
+
+---
+
+### Security
+
+7-layer check implementation:
+1. Encoding (ASCII only)
+2. Blacklist (substring match)
+3. Token length (282-358 bytes)
+4. Feature scan
+5. Human audit (status)
+6. Whitelist (opt-in)
+7. [TBD]
+
+REFERENCE: `docs/design/security/005-layers.md`
+
+---
+
+## State Management
+
+### Files (Single Source of Truth)
+
+- `~/.config/wf/registry.jsonl` — Workflow registry
+- `~/.config/wf/executions/` — Execution instances
+- `~/.config/wf/outputs/` — Step outputs
+
+### CLI and Server Share State
+
+Both use same files → consistency guaranteed.
+
+---
+
+## Dependencies
+
+| Package | Purpose |
+|---------|---------|
+| fastapi | HTTP server framework |
+| uvicorn | ASGI server |
+| typer | CLI framework |
+| pydantic | Data validation |
+
+All managed by uv. Use `uv add <package>` for new dependencies.
+
+---
+
+## Testing
+
+Run with: `uv run pytest`
+
+(TBD: Add pytest to dev dependencies)
+
+---
+
+## Related
+
+- Design docs: `docs/design/`
+- Syntax spec: `SYNTAX.md`, `SYNTAX.ebnf`
+- GitHub Issues: https://github.com/tracer-mohist/workflow-as-list/issues
+
+---
+
+Last Updated: 2026-03-09
+Maintainer: Tracer (迹)

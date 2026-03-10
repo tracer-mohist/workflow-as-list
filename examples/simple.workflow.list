@@ -1,0 +1,11 @@
+- (start) Read project files
+ - List directory contents
+ - Read main configuration
+ - Analyze dependencies
+- (check) Validate structure
+ - Compare with expected layout
+ - Document any issues found
+- @check[1]: All valid
+- (done) Generate summary report
+ - Export findings to output
+ - Complete workflow execution

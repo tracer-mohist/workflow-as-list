@@ -1,0 +1,93 @@
+# pyproject.toml
+[project]
+name = "workflow-as-list"
+version = "0.1.0"
+description = "A thinking constraint DSL for structuring LLM interactions"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.135.1",
+    "pydantic>=2.12.5",
+    "typer>=0.24.1",
+    "uvicorn>=0.41.0",
+]
+
+[project.scripts]
+workflow = "workflow_as_list.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/workflow_as_list"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+  "E",   # pycodestyle errors
+  "W",   # pycodestyle warnings
+  "F",   # pyflakes
+  "I",   # isort
+  "B",   # flake8-bugbear
+  "C4",  # flake8-comprehensions
+  "UP",  # pyupgrade
+]
+ignore = [
+  "E501",  # Line too long (handled by formatter)
+  "B008",  # Function call in argument defaults (typer pattern)
+  "UP042",  # StrEnum suggestion (Python 3.11+ only)
+]
+
+# Ignore scripts directory
+[tool.ruff.lint.per-file-ignores]
+"scripts/*" = ["E731"]  # Lambda in scripts is acceptable
+
+# Python Semantic Release Configuration
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+version_variables = ["src/workflow_as_list/__init__.py:__version__"]
+branch = "main"
+build_command = "uv build"
+commit_message = "chore(release): v{version}"
+tag_format = "v{version}"
+
+[tool.semantic_release.branches.main]
+match = "main"
+prerelease = false
+
+[tool.semantic_release.changelog]
+template_dir = "templates"
+changelog_file = "CHANGELOG.md"
+exclude_commit_patterns = [
+  "chore\\(release\\):",
+  "chore\\(deps\\):",
+  "Merge pull request",
+]
+
+[tool.semantic_release.remote]
+name = "origin"
+type = "github"
+ignore_token_for_push = false
+
+[tool.semantic_release.publish]
+dist_glob_patterns = ["dist/*"]
+upload_to_vcs_release = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["workflow_as_list"]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=9.0.2",
+    "python-semantic-release>=9.21.1",
+    "ruff>=0.15.5",
+]
