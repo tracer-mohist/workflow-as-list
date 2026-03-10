@@ -1,6 +1,6 @@
-# Release Workflow
+# Release Workflow - workflow-as-list
+# Stack: python-semantic-release
 # Triggers: push tags (v*)
-# NOTE: Automated version bumping and GitHub Releases via python-semantic-release
 #
 # Prerequisites:
 # - test + lint must pass before tagging (enforced by branch protection)

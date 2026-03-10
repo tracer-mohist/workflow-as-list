@@ -1,6 +1,6 @@
-# CI Workflow
+# CI Workflow - workflow-as-list
+# Stack: uv + Ruff + pytest
 # Triggers: push to main, pull requests to main
-# NOTE: Follows Limited Testing Strategy - test efficiency over coverage
 
 name: CI
 
