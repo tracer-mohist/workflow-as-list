@@ -1,14 +1,14 @@
 # .github/workflows/release.yml
 # Release Workflow
-# Triggers: push to main branch
+# Triggers: push tags (v*)
 # NOTE: Automated version bumping and GitHub Releases via python-semantic-release
 
 name: Release
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*'
 
 permissions:
   contents: write
