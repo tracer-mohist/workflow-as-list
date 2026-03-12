@@ -30,6 +30,10 @@ jobs:
         with:
           fetch-depth: 0  # Fetch full history for semantic-release
 
+      - name: Checkout to main branch
+        run: git checkout main
+        continue-on-error: true
+
       - name: Install uv
         uses: astral-sh/setup-uv@v5
 
