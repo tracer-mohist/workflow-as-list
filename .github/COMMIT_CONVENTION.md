@@ -22,8 +22,18 @@
 
 Required. Must be lowercase.
 
-feat: New product feature
-fix: Product bug fix
+### Version-Triggering Types
+
+These types trigger semantic version bumps (only for `src/` changes):
+
+feat: New product feature → MINOR bump (0.1.0 → 0.2.0)
+fix: Product bug fix → PATCH bump (0.1.0 → 0.1.1)
+BREAKING CHANGE: Breaking API change → MAJOR bump (0.1.0 → 1.0.0)
+
+### Non-Version-Triggering Types
+
+These types do NOT trigger version bumps:
+
 docs: Documentation only
 style: Formatting, linting (no code logic change)
 refactor: Code restructuring (no feature change)
@@ -31,6 +41,41 @@ test: Test files only
 chore: Development tools, scripts, maintenance
 ci: CI/CD configuration
 revert: Revert previous commit
+
+---
+
+## Scope and Directory Rules
+
+### src/ Directory (Product Code)
+
+Only changes to `src/` should use `feat:` or `fix:`:
+
+```
+src/workflow_as_list/cli.py          → feat(cli): add run command
+src/workflow_as_list/executor/       → fix(executor): handle null response
+src/workflow_as_list/security/       → feat(security): add whitelist support
+```
+
+### Non-src/ Directories
+
+Changes outside `src/` should NOT use `feat:` or `fix:`:
+
+```
+tests/test_*.py                      → test: add unit tests
+scripts/*.py                         → chore(scripts): add tool
+docs/*.md                            → docs: update README
+.github/workflows/*.yml              → ci: add validate workflow
+pyproject.toml                       → chore(deps): update dependencies
+```
+
+### Why This Matters
+
+Semantic release analyzes commit types to determine version bumps:
+- `feat` commits → minor version (new features)
+- `fix` commits → patch version (bug fixes)
+- Other types → no version change
+
+Using `feat(scripts)` or `fix(tests)` would incorrectly trigger version bumps for non-product changes.
 
 ---
 

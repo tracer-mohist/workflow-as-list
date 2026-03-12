@@ -18,7 +18,6 @@ workflow-as-list/
 │   └── config.py            # Configuration loading (INI)
 │
 ├── docs/                    # Design and research docs
-├── examples/                # Sample workflows
 ├── scripts/                 # Utility scripts
 ├── tests/                   # Test suite
 ├── pyproject.toml           # Project metadata + dependencies

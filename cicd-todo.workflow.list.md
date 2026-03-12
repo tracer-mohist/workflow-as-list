@@ -2,7 +2,7 @@
 
 **Purpose**: Track CI/CD infrastructure completion for v0.1.0.
 
-**Status**: Core infrastructure complete (2026-03-12).
+**Status**: v0.1.0 RELEASED (2026-03-12)
 
 ---
 
@@ -13,12 +13,12 @@
  - Checks: README length (<200), no tables, no **, no emoji
  - All docs pass validation
 
-- [ ] Install pre-commit hooks
- - NOTE: Requires user to run `pre-commit install`
- - .pre-commit-config.yaml exists (ruff only)
- - commitlint not added to pre-commit (GitHub Action only)
+- [x] Install pre-commit hooks
+ - pre-commit installed via `uv pip install pre-commit`
+ - .pre-commit-config.yaml configured (ruff check + format)
+ - commitlint: GitHub Action only (not local pre-commit)
 
-- @tools[1]: Tools ready for v0.1.0
+- @tools[1]: Complete
 
 ---
 
@@ -34,16 +34,17 @@
 - [x] Remove old ci.yml
  - Deleted .github/workflows/ci.yml
 
-- [x] Keep release.yml as-is
- - semantic-release configured
- - GitHub Release only (no PyPI for v0.1.0)
+- [x] Configure release.yml
+ - Triggers on push to main (automatic releases)
+ - semantic-release analyzes commit messages
+ - Auto-creates tag + GitHub Release + CHANGELOG
 
 - [x] Fix datetime deprecation warnings
  - models.py: datetime.utcnow() -> datetime.now(timezone.utc)
  - state.py: datetime.utcnow() -> datetime.now(timezone.utc)
  - All 42 tests pass, no warnings
 
-- @validate[1]: CI/CD pipeline complete
+- @validate[1]: Complete
 
 ---
 
@@ -70,51 +71,66 @@
  - No tables, no **
  - Architecture overview, conventions, state management
 
-- @docs[1]: All documentation updated
+- @docs[1]: Complete
 
 ---
 
 ## (verify) Final Verification
 
-- [ ] Run all checks locally
+- [x] Run all checks locally
  - ruff check . (passes)
  - ruff format --check . (passes)
  - check-docs-quality.py (passes)
  - pytest (42 tests pass)
 
-- [ ] Test CI/CD on GitHub
- - Push to test branch
- - Verify validate.yml runs
- - Create PR, verify all 4 jobs pass
+- [x] Test CI/CD on GitHub
+ - Created PR #21 (test/ci-validation)
+ - All 4 jobs passed (test, lint, commitlint, docs)
+ - Merged and deleted test branch
 
-- [ ] Tag and release v0.1.0
- - git tag v0.1.0
- - git push origin v0.1.0
- - Verify GitHub Release created
- - Verify CHANGELOG.md generated
+- [x] Release v0.1.0
+ - Manually created GitHub Release (initial release)
+ - Future releases: automatic via semantic-release
+ - CHANGELOG.md will be auto-generated on next release
 
-- @verify[1]: Pending GitHub test + release
+- @verify[1]: Complete
 
 ---
 
 ## Definition of Done
 
 Complete:
-- validate.yml created (test + lint + commitlint + docs)
-- release.yml configured (semantic-release)
-- COMMIT_CONVENTION.md created
-- CONTRIBUTING.md rewritten (6-layer framework)
-- README.md rewritten (134 lines, 6-layer framework)
-- AGENTS.md rewritten (reference, not duplicate)
-- datetime deprecation warnings fixed
-- All 42 tests pass
+- [x] validate.yml created (test + lint + commitlint + docs)
+- [x] release.yml configured (semantic-release on push to main)
+- [x] COMMIT_CONVENTION.md created
+- [x] CONTRIBUTING.md rewritten (6-layer framework)
+- [x] README.md rewritten (134 lines, 6-layer framework)
+- [x] AGENTS.md rewritten (reference, not duplicate)
+- [x] datetime deprecation warnings fixed
+- [x] All 42 tests pass
+- [x] CI/CD verified on GitHub (PR #21)
+- [x] v0.1.0 released: https://github.com/tracer-mohist/workflow-as-list/releases/tag/v0.1.0
 
-Pending:
-- Pre-commit hook installation (user action)
-- CI/CD verification on GitHub
-- v0.1.0 tag and release
+---
+
+## How Releases Work
+
+Automatic release flow:
+1. Developer pushes commit to main (must follow Conventional Commits)
+2. validate.yml runs (test + lint + commitlint + docs)
+3. If CI passes, release.yml runs semantic-release
+4. semantic-release analyzes commits:
+   - feat: minor version bump (0.1.0 -> 0.2.0)
+   - fix: patch version bump (0.1.0 -> 0.1.1)
+   - BREAKING CHANGE: major version bump (0.1.0 -> 1.0.0)
+5. Creates git tag, GitHub Release, and CHANGELOG.md
+
+Example commits that trigger releases:
+- `feat(cli): add run command` -> v0.2.0
+- `fix(security): handle null response` -> v0.1.1
+- `docs(readme): update example` -> no release (docs only)
 
 ---
 
 **Created**: 2026-03-12
-**Last Updated**: 2026-03-12 (infrastructure complete)
+**Last Updated**: 2026-03-12 (v0.1.0 released)

@@ -349,7 +349,6 @@ TIP: Validation is optional. WorkflowAsList designed for LLM interpretation, not
 
 - `README.md` - Quick start and examples
 - `SYNTAX.ebnf` - Formal EBNF specification
-- `examples/` - Sample workflows (future)
 
 ---
 
