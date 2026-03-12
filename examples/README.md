@@ -6,7 +6,7 @@ Real-world workflow examples.
 
 ## Structure
 
-```
+```dir.info
 examples/
 ├── git/commit.workflow.list    # Git commit helper
 ├── ci-cd/                      # CI/CD workflows (TBD)
@@ -17,17 +17,48 @@ Format: `examples/[domain]/[use-case].workflow.list`
 
 ---
 
-## Usage
+## File Header Style
 
-```bash
-# Copy example
-cp examples/git/commit.workflow.list ./my.workflow.list
+Each workflow file includes a header comment:
 
-# Check and run
-workflow check my.workflow.list
-workflow approve my
-workflow run my
 ```
+# =============================================================================
+# Workflow: <Name>
+# =============================================================================
+#
+# Purpose: What problem this solves
+# Usage: How to run (check, approve, run)
+# Preconditions: What must be true before running
+# Postconditions: What is guaranteed after running
+#
+# =============================================================================
+```
+
+This follows:
+- Traditional script headers (self-documenting)
+- Design by Contract (Bertand Meyer) - clear pre/post conditions
+- Workflow files are self-contained
+
+---
+
+## Comment Style
+
+Comments explain **why**, not **what**:
+
+```
+# Good: explains why
+- @validate[1]  # Prevent infinite loops on validation failure
+
+# Bad: explains what (obvious from code)
+- @validate[1]  # Jump back to validate tag max 1 time
+```
+
+If code needs long comments, refactor the code instead.
+
+This follows Unix philosophy:
+- Code should be self-explanatory
+- Comments document intent, not mechanics
+- Complexity should be refactored, not documented
 
 ---
 
@@ -36,30 +67,14 @@ workflow run my
 Examples must:
 - Solve real problems (not toy examples)
 - Show DSL features in action
-- Include clear comments
+- Include clear comments (why, not what)
 - Pass `workflow check`
-
----
-
-## Examples
-
-### Git
-
-- `git/commit.workflow.list` - Conventional Commits helper
-
-### CI/CD
-
-(TBD)
-
-### Research
-
-(TBD)
 
 ---
 
 ## Related
 
-- `SYNTAX.md` - DSL syntax
+- `SYNTAX.md` - DSL syntax (5 rules)
 - `README.md` - Project overview
 
 ---
