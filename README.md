@@ -1,13 +1,12 @@
-<!-- README.md -->
 # WorkflowAsList
 
 Workflows are Just Lists.
 
+A thinking constraint DSL for structuring LLM interactions and human thinking.
+
 ---
 
 ## Purpose
-
-WorkflowAsList is a thinking constraint DSL. It is a minimalist list-based format for structuring LLM interactions and human thinking.
 
 Goal: Filter noise, focus thinking, prevent divergence.
 
@@ -17,11 +16,13 @@ NOTE: This DSL is for thinking constraint, not for execution. LLM reads and foll
 
 ## Syntax (5 Rules)
 
+```workflow.list
 - content                   # List item
  - nested content           # Indent = sub-task (2 spaces)
 - (tag) content             # Tag (can modify any line type)
 - @tag[N]: condition?       # Jump (max N times)
 - import: path              # Import other workflow
+```
 
 Tag Universality: (tag) can modify any line type.
 
@@ -29,7 +30,7 @@ Tag Universality: (tag) can modify any line type.
 
 ## Example
 
-```
+```workflow.list
 - (start) Read project structure
  - Read directory: ls -la
  - Read entry point: cat package.json
@@ -44,10 +45,54 @@ Tag Universality: (tag) can modify any line type.
 
 ---
 
+## Installation
+
+Requires Python 3.12+ and uv.
+
+```bash
+# Clone repository
+git clone https://github.com/tracer-mohist/workflow-as-list.git
+cd workflow-as-list
+
+# Install with uv
+uv sync
+
+# Install CLI to PATH (optional)
+uv pip install -e .
+```
+
+---
+
+## Usage
+
+CLI commands:
+
+```bash
+# Check and register workflow
+workflow check my-workflow.workflow.list
+
+# Approve for execution
+workflow approve my-workflow
+
+# Run workflow
+workflow run my-workflow
+
+# List all workflows
+workflow list
+
+# Show workflow or execution details
+workflow show <name-or-id>
+
+# Start HTTP server
+workflow serve --host 127.0.0.1 --port 8080
+```
+
+---
+
 ## File Extension
 
-- Extension: .workflow.list
-- Format: Plain text (UTF-8)
+Extension: .workflow.list
+Format: Plain text (UTF-8)
 
 NOTE: Full extension for agent readability. Short forms like .wl reduce clarity.
 
@@ -62,22 +107,30 @@ NOTE: Full extension for agent readability. Short forms like .wl reduce clarity.
 
 ---
 
-## Vocabulary Disambiguation
+## Vocabulary
 
-- Thinking constraint: Limiting output format to reduce divergence
-- DSL: Domain-Specific Language
-- Jump: Conditional loop back to tagged item
-- Tag: Label for referencing items
+Thinking constraint: Limiting output format to reduce divergence
+DSL: Domain-Specific Language
+Jump: Conditional loop back to tagged item
+Tag: Label for referencing items
 
 ---
 
-## Related
+## Documentation
 
-- Specification: Full syntax definition (future)
-- Examples: Sample workflows (future)
+Syntax specification: `SYNTAX.md`, `SYNTAX.ebnf`
+Design docs: `docs/design/`
+Contributing: `CONTRIBUTING.md`
+Commit convention: `.github/COMMIT_CONVENTION.md`
+
+---
+
+## License
+
+MIT
 
 ---
 
 Author: Tracer (Chinese: 迹，Ji)
 Created: 2026-03-08
-License: MIT
+Last Updated: 2026-03-12

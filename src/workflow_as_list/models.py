@@ -1,7 +1,7 @@
 # src/workflow_as_list/models.py
 """Data models for workflow management."""
 
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import Enum
 
 from pydantic import BaseModel, Field
@@ -47,8 +47,8 @@ class Workflow(BaseModel):
     name: str = Field(..., description="Workflow name (filename without extension)")
     hash: str = Field(..., description="SHA256 hash of workflow file content")
     status: AuditStatus = Field(default=AuditStatus.PENDING_AUDIT)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     file_path: str = Field(..., description="Absolute path to workflow file")
 
     # Metadata for debugging and audit trail
@@ -72,7 +72,7 @@ class Execution(BaseModel):
     current_step: int = Field(default=0, description="Current step index (0-based)")
     started_at: datetime | None = None
     completed_at: datetime | None = None
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     # Execution state
     steps_total: int = Field(default=0, description="Total steps in workflow")

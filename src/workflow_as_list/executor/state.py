@@ -7,7 +7,7 @@ REFERENCE: docs/design/overview/002-architecture.md — Executor role
 
 import json
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 
 from ..models import AuditStatus, Execution, ExecutionStatus, Workflow
@@ -82,7 +82,7 @@ class Executor:
         for entry in entries:
             if entry["name"] == name:
                 entry["status"] = status.value
-                entry["updated_at"] = datetime.utcnow().isoformat()
+                entry["updated_at"] = datetime.now(UTC).isoformat()
                 updated = True
 
         if not updated:
@@ -132,7 +132,7 @@ class Executor:
 
     def update_execution(self, execution: Execution) -> None:
         """Update execution state."""
-        execution.updated_at = datetime.utcnow()  # type: ignore
+        execution.updated_at = datetime.now(UTC)
         self._save_execution(execution)
 
     def get_next_step(self, execution: Execution, parser: object) -> dict | None:
@@ -142,7 +142,7 @@ class Executor:
         """
         if execution.current_step >= execution.steps_total:
             execution.status = ExecutionStatus.COMPLETED
-            execution.completed_at = datetime.utcnow()
+            execution.completed_at = datetime.now(UTC)
             self.update_execution(execution)
             return None
 

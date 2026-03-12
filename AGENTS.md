@@ -1,4 +1,3 @@
-<!-- AGENTS.md -->
 # AGENTS.md - WorkflowAsList Project Guide
 
 Purpose: Project architecture and development conventions.
@@ -13,14 +12,15 @@ workflow-as-list/
 │   ├── __init__.py
 │   ├── cli.py               # Typer CLI (7 subcommands)
 │   ├── server.py            # FastAPI HTTP server
-│   ├── executor.py          # Core interpreter
-│   ├── security.py          # 7-layer security checks
+│   ├── executor/            # Core interpreter (parser, state)
+│   ├── security/            # 7-layer security checks
 │   ├── models.py            # Pydantic data models
-│   ├── state.py             # State management (registry, executions)
 │   └── config.py            # Configuration loading (INI)
 │
 ├── docs/                    # Design and research docs
-├── examples/                # Sample workflows (TBD)
+├── examples/                # Sample workflows
+├── scripts/                 # Utility scripts
+├── tests/                   # Test suite
 ├── pyproject.toml           # Project metadata + dependencies
 └── AGENTS.md                # This file
 ```
@@ -49,16 +49,16 @@ cli.py (360+ lines) → cli/
 
 ### Code Style
 
-**Comments:**
+Comments:
 - Line comments at critical logic points
 - Explain intent (why), not mechanics (what)
 - Avoid docstrings for every function
 
-**Types:**
+Types:
 - Type annotations required for all functions
 - Pydantic models for data structures
 
-**Naming:**
+Naming:
 - snake_case for functions/variables
 - PascalCase for classes
 - UPPERCASE for constants
@@ -74,7 +74,7 @@ cli.py (360+ lines) → cli/
 4. Feature scan
 5. Human audit (status)
 6. Whitelist (opt-in)
-7. [TBD]
+7. TBD
 
 REFERENCE: `docs/design/security/005-layers.md`
 
@@ -82,26 +82,26 @@ REFERENCE: `docs/design/security/005-layers.md`
 
 ## State Management
 
-### Files (Single Source of Truth)
-
+Files (Single Source of Truth):
 - `~/.config/wf/registry.jsonl` — Workflow registry
 - `~/.config/wf/executions/` — Execution instances
 - `~/.config/wf/outputs/` — Step outputs
 
-### CLI and Server Share State
-
-Both use same files → consistency guaranteed.
+CLI and Server Share State:
+- Both use same files
+- Consistency guaranteed
 
 ---
 
 ## Dependencies
 
-| Package | Purpose |
-|---------|---------|
-| fastapi | HTTP server framework |
-| uvicorn | ASGI server |
-| typer | CLI framework |
-| pydantic | Data validation |
+See: `pyproject.toml` (single source of truth)
+
+Core dependencies:
+- fastapi — HTTP server framework
+- uvicorn — ASGI server
+- typer — CLI framework
+- pydantic — Data validation
 
 All managed by uv. Use `uv add <package>` for new dependencies.
 
@@ -111,7 +111,11 @@ All managed by uv. Use `uv add <package>` for new dependencies.
 
 Run with: `uv run pytest`
 
-(TBD: Add pytest to dev dependencies)
+Test files:
+- `tests/test_executor_unit.py` — Executor unit tests
+- `tests/test_security_unit.py` — Security layer tests
+- `tests/test_cli_component.py` — CLI component tests
+- `tests/test_server_component.py` — Server component tests
 
 ---
 
@@ -123,5 +127,5 @@ Run with: `uv run pytest`
 
 ---
 
-Last Updated: 2026-03-09
+Last Updated: 2026-03-12
 Maintainer: Tracer (迹)

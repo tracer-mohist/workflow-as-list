@@ -1,6 +1,6 @@
 # Contributing to workflow-as-list
 
-**Thank you for your interest in contributing!**
+Thank you for your interest in contributing.
 
 This document provides guidelines and instructions for contributing to workflow-as-list.
 
@@ -8,7 +8,7 @@ This document provides guidelines and instructions for contributing to workflow-
 
 ## Quick Start
 
-**Want to contribute?** Here's how to get started:
+Want to contribute? Here is how to get started:
 
 ```bash
 # 1. Fork the repository
@@ -26,28 +26,49 @@ git checkout -b issue/19-your-feature-name
 # 6. Push and open a Pull Request (required - no direct pushes to main)
 ```
 
-**Important**: We use **Pull Requests for all changes** — no direct pushes to `main`.
+Important: We use Pull Requests for all changes. No direct pushes to main.
 
 ---
 
 ## Commit Message Convention
 
-We follow [Conventional Commits v1.0.0](https://www.conventionalcommits.org/en/v1.0.0/).
+We follow Conventional Commits v1.0.0.
 
-**Full Guide**: See [.github/COMMIT_CONVENTION.md](.github/COMMIT_CONVENTION.md)
+Full Guide: See `.github/COMMIT_CONVENTION.md`
 
 ### Quick Reference
 
-| Type | When to Use | Example |
-|------|-------------|---------|
-| `feat(scope)` | New **product** feature | `feat(cli): add check command` |
-| `fix(scope)` | **Product** bug fix | `fix(security): handle null response` |
-| `chore(scope)` | Development tools, scripts | `chore(scripts): add check-headers.py` |
-| `style` | Formatting, linting | `style(tests): fix ruff linting` |
-| `refactor(scope)` | Code restructuring | `refactor(executor): split into modules` |
-| `docs(scope)` | Documentation | `docs(readme): update installation` |
-| `ci` | CI/CD configuration | `ci: add GitHub Actions workflow` |
-| `test(scope)` | Test files | `test: add unit tests for security` |
+Type: `feat(scope)`
+- When to Use: New product feature
+- Example: `feat(cli): add check command`
+
+Type: `fix(scope)`
+- When to Use: Product bug fix
+- Example: `fix(security): handle null response`
+
+Type: `chore(scope)`
+- When to Use: Development tools, scripts
+- Example: `chore(scripts): add check-headers.py`
+
+Type: `style`
+- When to Use: Formatting, linting
+- Example: `style(tests): fix ruff linting`
+
+Type: `refactor(scope)`
+- When to Use: Code restructuring
+- Example: `refactor(executor): split into modules`
+
+Type: `docs(scope)`
+- When to Use: Documentation
+- Example: `docs(readme): update installation`
+
+Type: `ci`
+- When to Use: CI/CD configuration
+- Example: `ci: add GitHub Actions workflow`
+
+Type: `test(scope)`
+- When to Use: Test files
+- Example: `test: add unit tests for security`
 
 ### Format
 
@@ -59,22 +80,24 @@ We follow [Conventional Commits v1.0.0](https://www.conventionalcommits.org/en/v
 [optional footer(s)]
 ```
 
-**Rules**:
-- ✅ Type: lowercase (`feat`, `fix`, `chore`, ...)
-- ✅ Scope: lowercase, optional (`cli`, `scripts`, `tests`, ...)
-- ✅ Description: imperative mood ("add" not "added")
-- ✅ Body: wrap at 72 characters
-- ✅ Footer: `BREAKING CHANGE:`, `Closes #123`, etc.
+Rules:
+- Type: lowercase (feat, fix, chore, ...)
+- Scope: lowercase, optional (cli, scripts, tests, ...)
+- Description: imperative mood (add not added)
+- Body: wrap at 72 characters
+- Footer: BREAKING CHANGE:, Closes #123, etc.
 
 ### Examples
 
+Good:
 ```bash
-# Good
 git commit -m "feat(cli): add check command"
 git commit -m "chore(scripts): add check-headers.py"
 git commit -m "style(tests): fix ruff linting"
+```
 
-# Bad (don't do this)
+Bad (do not do this):
+```bash
 git commit -m "feat(scripts): add tool"  # Scripts are chore, not feat
 git commit -m "fix: lint errors"         # Lint is style, not fix
 git commit -m "Updated file"             # No type, no scope
@@ -82,11 +105,17 @@ git commit -m "Updated file"             # No type, no scope
 
 ### Common Mistakes
 
-| Wrong | Correct | Why |
-|-------|---------|-----|
-| `feat(scripts): ...` | `chore(scripts): ...` | Scripts are dev tools |
-| `fix(tests): lint` | `style(tests): lint` | Lint is style, not bug |
-| `refactor(scripts): ...` | `chore(scripts): ...` | Scripts refactor is chore |
+Wrong: `feat(scripts): ...`
+Correct: `chore(scripts): ...`
+Why: Scripts are dev tools
+
+Wrong: `fix(tests): lint`
+Correct: `style(tests): lint`
+Why: Lint is style, not bug
+
+Wrong: `refactor(scripts): ...`
+Correct: `chore(scripts): ...`
+Why: Scripts refactor is chore
 
 ---
 
@@ -94,14 +123,18 @@ git commit -m "Updated file"             # No type, no scope
 
 ### 1. Branch Naming
 
+Feature branch (linked to issue):
 ```bash
-# Feature branch (linked to issue)
 git checkout -b issue/19-add-check-command
+```
 
-# Bug fix branch
+Bug fix branch:
+```bash
 git checkout -b issue/42-fix-security-crash
+```
 
-# Documentation branch
+Documentation branch:
+```bash
 git checkout -b docs/add-contributing-guide
 ```
 
@@ -127,7 +160,7 @@ git push -u origin issue/19-add-check-command
 ### 3. Pull Request
 
 1. Go to https://github.com/tracer-mohist/workflow-as-list
-2. Click "New Pull Request"
+2. Click New Pull Request
 3. Select your branch
 4. Fill in PR template
 5. Wait for CI (test + lint must pass)
@@ -140,32 +173,32 @@ git push -u origin issue/19-add-check-command
 
 ### Python
 
-- **Formatter**: Ruff (`uv run ruff format .`)
-- **Linter**: Ruff (`uv run ruff check .`)
-- **Imports**: Sorted automatically by Ruff
-- **Line length**: 88 characters (Ruff default)
+Formatter: Ruff (`uv run ruff format .`)
+Linter: Ruff (`uv run ruff check .`)
+Imports: Sorted automatically by Ruff
+Line length: 88 characters (Ruff default)
 
 ### Testing
 
-- **Framework**: pytest
-- **Location**: `tests/` directory
-- **Naming**: `test_<module>_<type>.py` (e.g., `test_security_unit.py`)
+Framework: pytest
+Location: `tests/` directory
+Naming: `test_<module>_<type>.py` (e.g., `test_security_unit.py`)
 
 ### Documentation
 
-- **Format**: Markdown
-- **Style**: Follow [6-Layer Prompt Engineering Framework](docs/prompt-engineering/README.md)
-- **Location**: `docs/` directory
+Format: Markdown
+Style: Follow 6-Layer Prompt Engineering Framework (see `docs/prompt-engineering/README.md`)
+Location: `docs/` directory
 
 ---
 
 ## Questions?
 
-- **General**: Open an issue
-- **Code**: Check existing issues and PRs
-- **Conventions**: See [.github/COMMIT_CONVENTION.md](.github/COMMIT_CONVENTION.md)
+General: Open an issue
+Code: Check existing issues and PRs
+Conventions: See `.github/COMMIT_CONVENTION.md`
 
 ---
 
-**Last Updated**: 2026-03-10  
-**Related**: [workflow-as-list#19](https://github.com/tracer-mohist/workflow-as-list/issues/19) (Conventional Commits cleanup)
+Last Updated: 2026-03-12
+Related: workflow-as-list#19 (Conventional Commits cleanup)
