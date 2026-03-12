@@ -37,10 +37,13 @@ These types do NOT trigger version bumps:
 docs: Documentation only
 style: Formatting, linting (no code logic change)
 refactor: Code restructuring (no feature change)
-test: Test files only
+test: Test files only (unit tests, integration tests, E2E tests)
 chore: Development tools, scripts, maintenance
 ci: CI/CD configuration
 revert: Revert previous commit
+
+**Important**: Test-related commits should use `test:` type, NOT `feat:` or `fix:`.
+Adding tests does not add user-facing features or fix product bugs.
 
 ---
 
@@ -67,6 +70,19 @@ docs/*.md                            → docs: update README
 .github/workflows/*.yml              → ci: add validate workflow
 pyproject.toml                       → chore(deps): update dependencies
 ```
+
+### Test Commits Never Trigger Versions
+
+**Rule**: Test-related commits ALWAYS use `test:` type.
+
+Examples:
+```
+test: add unit tests for parser
+test(cli): add integration tests for check command
+test: add E2E tests for workflow execution
+```
+
+**Why**: Tests verify existing functionality, they don't add features or fix bugs.
 
 ### Why This Matters
 
