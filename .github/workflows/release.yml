@@ -1,17 +1,26 @@
 # Release Workflow - workflow-as-list
 # Stack: python-semantic-release
-# Triggers: push tags (v*)
+# Triggers: push to main branch (automatic releases)
+#
+# How it works:
+# - On every push to main, semantic-release analyzes commit messages
+# - If commits follow Conventional Commits (feat, fix, etc.), it:
+#   1. Bumps version according to semver
+#   2. Creates git tag
+#   3. Generates CHANGELOG.md
+#   4. Creates GitHub Release
+#   5. Publishes to PyPI (if configured)
 #
 # Prerequisites:
-# - test + lint must pass before tagging (enforced by branch protection)
-# - Release assumes test + lint already passed on merge
+# - test + lint must pass before merge (enforced by branch protection)
+# - All commits must follow Conventional Commits
 
 name: Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -21,6 +30,7 @@ permissions:
   contents: write
   issues: write
   pull-requests: write
+  id-token: write
 
 jobs:
   release:
@@ -28,11 +38,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch full history for semantic-release
-
-      - name: Checkout to main branch
-        run: git checkout main
-        continue-on-error: true
+          fetch-depth: 0
+          persist-credentials: true
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
@@ -48,4 +55,8 @@ jobs:
       - name: Python Semantic Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: uv run semantic-release version
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: github-actions[bot]@users.noreply.github.com
+        run: uv run semantic-release version --no-strict
