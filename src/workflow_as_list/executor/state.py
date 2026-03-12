@@ -10,6 +10,7 @@ import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 
+from ..constants import EXECUTIONS_DIR, OUTPUTS_DIR, REGISTRY_FILE, ensure_directories
 from ..models import AuditStatus, Execution, ExecutionStatus, Workflow
 
 
@@ -22,16 +23,24 @@ class Executor:
     - State persistence to files
     """
 
-    def __init__(self, config_dir: Path):
-        self.config_dir = config_dir
-        self.registry_path = config_dir / "registry.jsonl"
-        self.executions_dir = config_dir / "executions"
-        self.outputs_dir = config_dir / "outputs"
+    def __init__(self, config_dir: Path | None = None):
+        # Use constants if no config_dir provided
+        if config_dir is None:
+            ensure_directories()
+            self.config_dir = REGISTRY_FILE.parent
+            self.registry_path = REGISTRY_FILE
+            self.executions_dir = EXECUTIONS_DIR
+            self.outputs_dir = OUTPUTS_DIR
+        else:
+            self.config_dir = config_dir
+            self.registry_path = config_dir / "registry.jsonl"
+            self.executions_dir = config_dir / "executions"
+            self.outputs_dir = config_dir / "outputs"
 
-        # Ensure directories exist
-        self.config_dir.mkdir(parents=True, exist_ok=True)
-        self.executions_dir.mkdir(exist_ok=True)
-        self.outputs_dir.mkdir(exist_ok=True)
+            # Ensure directories exist
+            self.config_dir.mkdir(parents=True, exist_ok=True)
+            self.executions_dir.mkdir(exist_ok=True)
+            self.outputs_dir.mkdir(exist_ok=True)
 
     def register_workflow(
         self, name: str, file_path: Path, content: str, file_hash: str, token_count: int

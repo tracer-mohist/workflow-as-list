@@ -4,6 +4,7 @@
 import configparser
 from pathlib import Path
 
+from .constants import TOKEN_MAX, TOKEN_MIN
 from .models import Config
 
 DEFAULT_CONFIG = Config(
@@ -12,9 +13,9 @@ DEFAULT_CONFIG = Config(
     enable_whitelist=False,
     host="127.0.0.1",
     port=8080,
-    config_dir="~/.config/wf",
-    token_min=282,
-    token_max=358,
+    config_dir="~/.workflow-as-list",
+    token_min=TOKEN_MIN,
+    token_max=TOKEN_MAX,
 )
 
 

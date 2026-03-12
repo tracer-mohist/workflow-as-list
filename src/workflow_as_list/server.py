@@ -5,7 +5,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 
-from .config import ensure_config_dir, load_config
+from .constants import ensure_directories
 from .executor import Executor, WorkflowParser
 from .models import AuditStatus
 
@@ -15,13 +15,12 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="WorkflowAsList API",
         description="HTTP API for workflow management",
-        version="0.1.0",
+        version="0.1.1",
     )
 
     # Initialize executor
-    config = load_config()
-    config_dir = ensure_config_dir(config)
-    executor = Executor(config_dir)
+    ensure_directories()
+    executor = Executor()
 
     @app.get("/workflows", tags=["workflows"])
     def list_workflows():
