@@ -67,18 +67,13 @@ uv pip install -e .
 
 Default state location: `~/.workflow-as-list/`
 
-```
-~/.workflow-as-list/
-├── config.ini           # Configuration (optional)
-├── registry.jsonl       # Registered workflows
-├── server.pid           # Server process ID
-├── server.log           # Server logs
-├── state/
-│   ├── executions/      # Execution history
-│   └── outputs/         # Step outputs
-└── cache/
-    └── imports/         # Imported workflow cache
-```
+- `config.ini` — Configuration (optional)
+- `registry.jsonl` — Registered workflows (append-only)
+- `server.pid` — Server process ID
+- `server.log` — Server logs
+- `state/executions/` — Execution instances
+- `state/outputs/` — Step outputs (one file per step)
+- `cache/imports/` — Imported workflow cache
 
 To reset all state:
 ```bash
@@ -89,29 +84,50 @@ NOTE: Single location for easy cleanup and backup.
 
 ---
 
-## Usage
+## Execution Model (Progressive Reading)
 
-CLI commands:
+workflow-as-list is a **reader**, not an executor. It enables progressive reading of workflows.
 
-```bash
-# Check and register workflow
-workflow check my-workflow.workflow.list
+### Reader Metaphor
 
-# Approve for execution
-workflow approve my-workflow
+Like reading a book:
+1. Open to current page (read step)
+2. Read and understand content
+3. Turn page when ready (advance)
+4. Cannot skip unread pages (enforced)
 
-# Run workflow
-workflow run my-workflow
+### Agent Workflow
 
-# List all workflows
-workflow list
-
-# Show workflow or execution details
-workflow show <name-or-id>
-
-# Start HTTP server
-workflow serve --host 127.0.0.1 --port 8080
 ```
+1. workflow run <name>           # Create execution instance
+2. workflow exec read <id>       # Read current step (mark as read)
+3. [Agent executes operations]   # Using own tools (git, API, etc.)
+4. workflow exec next <id>       # Advance to next step (must read first)
+5. Repeat steps 2-4 until done
+```
+
+### CLI Commands
+
+- `workflow check <file>` — Validate and register workflow
+- `workflow approve <name>` — Approve for execution
+- `workflow reject <name>` — Reject workflow
+- `workflow run <name>` — Create execution instance
+- `workflow list` — List all workflows
+- `workflow show <name>` — Show workflow definition
+- `workflow exec read <id>` — Read current step (mark as read)
+- `workflow exec next <id>` — Advance to next step (must read first)
+- `workflow server start/stop/status/logs` — Server lifecycle
+
+### Server API
+
+- `GET /workflows` — List workflows
+- `GET /workflows/{name}` — Workflow details
+- `POST /workflows/{name}/approve` — Approve workflow
+- `POST /workflows/{name}/run` — Create execution
+- `GET /executions/{id}` — Execution status
+- `POST /executions/{id}/next` — Advance step (checks read)
+
+REFERENCE: docs/design/runtime/007-execution.md
 
 ---
 
@@ -130,24 +146,27 @@ NOTE: Full extension for agent readability. Short forms like .wl reduce clarity.
 - Constraint over Freedom: Bounded thinking
 - Human plus LLM: Readable by both
 - 5 Rules Only: If it needs more, it is not WorkflowAsList
+- Progressive Reading: Must read before advancing
 
 ---
 
 ## Vocabulary
 
-Thinking constraint: Limiting output format to reduce divergence
-DSL: Domain-Specific Language
-Jump: Conditional loop back to tagged item
-Tag: Label for referencing items
+- Thinking constraint: Limiting output format to reduce divergence
+- DSL: Domain-Specific Language
+- Jump: Conditional loop back to tagged item
+- Tag: Label for referencing items
+- Progressive reading: Must read current step before advancing
 
 ---
 
 ## Documentation
 
-Syntax specification: `SYNTAX.md`, `SYNTAX.ebnf`
-Design docs: `docs/design/`
-Contributing: `CONTRIBUTING.md`
-Commit convention: `.github/COMMIT_CONVENTION.md`
+- Syntax specification: `SYNTAX.md`, `SYNTAX.ebnf`
+- Design docs: `docs/design/`
+- Contributing: `CONTRIBUTING.md`
+- Commit convention: `.github/COMMIT_CONVENTION.md`
+- Agent integration: See Issue #33
 
 ---
 
@@ -159,5 +178,4 @@ MIT
 
 Author: Tracer (Chinese: 迹，Ji)
 Created: 2026-03-08
-Last Updated: 2026-03-12
-
+Last Updated: 2026-03-13
