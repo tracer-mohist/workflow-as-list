@@ -61,7 +61,7 @@ class Execution(BaseModel):
     """Execution instance.
 
     Created when workflow.run() is called.
-    Stored in ~/.config/wf/executions/<name>-<timestamp>.json
+    Stored in PROJECT_ROOT/state/executions/<name>-<timestamp>.json
     """
 
     execution_id: str = Field(..., description="Unique execution identifier")
@@ -84,9 +84,9 @@ class Config(BaseModel):
     """Application configuration.
 
     Loaded from INI files with this priority:
-    1. Built-in defaults
-    2. ~/.config/workflow/config.ini (user)
-    3. ./workflow.ini (project)
+    1. Built-in defaults (PROJECT_ROOT)
+    2. PROJECT_ROOT/config.ini (unified config)
+    3. ./workflow.ini (project override)
     4. CLI arguments (override)
     """
 
@@ -101,7 +101,8 @@ class Config(BaseModel):
 
     # Paths
     config_dir: str = Field(
-        default_factory=lambda: str(Path.home() / ".workflow-as-list")
+        default_factory=lambda: str(Path.home() / ".workflow-as-list"),
+        description="Root directory for all workflow state",
     )
 
     # Token length constraints (from design docs)

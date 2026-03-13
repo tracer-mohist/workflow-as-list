@@ -2,35 +2,47 @@
 """Centralized constants and path definitions.
 
 Single source of truth for all paths and configuration constants.
+
+Design Principle: All state lives under PROJECT_ROOT for easy cleanup,
+backup, and agent-friendly state visibility.
 """
 
 from pathlib import Path
 
 # =============================================================================
-# Base Directory
+# Project Root
 # =============================================================================
 
-BASE_DIR = Path.home() / ".workflow-as-list"
+PROJECT_ROOT = Path.home() / ".workflow-as-list"
+"""
+All workflow-as-list state lives here.
+
+Why:
+- Single location (easy to remember for agents)
+- Easy cleanup: rm -rf ~/.workflow-as-list/
+- Easy backup: backup one directory
+- State visible: always know where to look
+"""
 
 # =============================================================================
 # Configuration Files
 # =============================================================================
 
-CONFIG_FILE = BASE_DIR / "config.ini"
-REGISTRY_FILE = BASE_DIR / "registry.jsonl"
+CONFIG_FILE = PROJECT_ROOT / "config.ini"
+REGISTRY_FILE = PROJECT_ROOT / "registry.jsonl"
 
 # =============================================================================
 # Server Files
 # =============================================================================
 
-PID_FILE = BASE_DIR / "server.pid"
-SERVER_LOG = BASE_DIR / "server.log"
+PID_FILE = PROJECT_ROOT / "server.pid"
+SERVER_LOG = PROJECT_ROOT / "logs" / "server.log"
 
 # =============================================================================
 # State Directories
 # =============================================================================
 
-STATE_DIR = BASE_DIR / "state"
+STATE_DIR = PROJECT_ROOT / "state"
 EXECUTIONS_DIR = STATE_DIR / "executions"
 OUTPUTS_DIR = STATE_DIR / "outputs"
 
@@ -38,7 +50,7 @@ OUTPUTS_DIR = STATE_DIR / "outputs"
 # Cache Directories
 # =============================================================================
 
-CACHE_DIR = BASE_DIR / "cache"
+CACHE_DIR = PROJECT_ROOT / "cache"
 IMPORTS_CACHE = CACHE_DIR / "imports"
 
 # =============================================================================
@@ -55,7 +67,6 @@ DEFAULT_PORT = 8080
 TOKEN_MIN = 282
 TOKEN_MAX = 358
 
-
 # =============================================================================
 # Directory Initialization
 # =============================================================================
@@ -64,11 +75,12 @@ TOKEN_MAX = 358
 def ensure_directories() -> None:
     """Ensure all required directories exist.
 
-    Creates BASE_DIR and all subdirectories on first use.
+    Creates PROJECT_ROOT and all subdirectories on first use.
     """
-    BASE_DIR.mkdir(parents=True, exist_ok=True)
+    PROJECT_ROOT.mkdir(parents=True, exist_ok=True)
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     EXECUTIONS_DIR.mkdir(parents=True, exist_ok=True)
     OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     IMPORTS_CACHE.mkdir(parents=True, exist_ok=True)
+    (PROJECT_ROOT / "logs").mkdir(parents=True, exist_ok=True)

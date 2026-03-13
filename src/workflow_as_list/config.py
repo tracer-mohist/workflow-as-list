@@ -4,7 +4,7 @@
 import configparser
 from pathlib import Path
 
-from .constants import TOKEN_MAX, TOKEN_MIN
+from .constants import PROJECT_ROOT, TOKEN_MAX, TOKEN_MIN
 from .models import Config
 
 DEFAULT_CONFIG = Config(
@@ -13,7 +13,7 @@ DEFAULT_CONFIG = Config(
     enable_whitelist=False,
     host="127.0.0.1",
     port=8080,
-    config_dir=str(Path.home() / ".workflow-as-list"),
+    config_dir=str(PROJECT_ROOT),
     token_min=TOKEN_MIN,
     token_max=TOKEN_MAX,
 )
@@ -23,8 +23,8 @@ def load_config(config_paths: list[Path] | None = None) -> Config:
     """Load configuration with priority:
 
     1. Built-in defaults
-    2. ~/.config/workflow/config.ini (user)
-    3. ./workflow.ini (project)
+    2. PROJECT_ROOT/config.ini (unified config)
+    3. ./workflow.ini (project override)
     4. CLI arguments (handled by caller)
     """
     config = configparser.ConfigParser()
@@ -34,7 +34,7 @@ def load_config(config_paths: list[Path] | None = None) -> Config:
 
     # Load from files
     paths = config_paths or [
-        Path.home() / ".config" / "workflow" / "config.ini",
+        PROJECT_ROOT / "config.ini",
         Path.cwd() / "workflow.ini",
     ]
 
