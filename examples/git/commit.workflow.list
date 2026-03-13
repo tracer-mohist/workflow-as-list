@@ -1,20 +1,19 @@
 # Git Commit
-# Purpose: Complete flow
-
-- (start) Check
+- (start) Status
   - Run: git status
-
-- import: commit-validate.workflow.list
-- import: commit-type.workflow.list
-- import: commit-message.workflow.list
-
-- (format) Format
-  - Ask: Use? (yes/no)
+- (validate) Check
+  - Check: No .env
+  - Check: No debug
+  - @validate[1]: OK?
+- (type) Type?
+  - src/ -> feat/fix
+  - tests/ -> test
+  - docs/ -> docs
+- (scope) Scope?
+- (desc) Desc?
+- (format) Output
+  - Show: <type>(<scope>)!: <desc>
+  - Ask: Use?
   - @format[1]: OK?
-
-- (preview) Preview
-  - Ask: Commit? (yes/no)
-  - @preview[1]: OK?
-
 - Execute: git commit
 - End
