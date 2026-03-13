@@ -9,6 +9,7 @@ import typer
 # Import subcommands
 from .approve import approve
 from .check import check
+from .exec import app as exec_app
 from .list import list_workflows
 from .reject import reject
 from .run import run
@@ -25,6 +26,7 @@ app.command()(reject)
 app.command()(run)
 app.command(name="list")(list_workflows)
 app.command()(show)
+app.add_typer(exec_app, name="exec")
 app.add_typer(server_app, name="server")
 
 
@@ -38,6 +40,7 @@ __all__ = [
     "main",
     "approve",
     "check",
+    "exec_app",
     "list_workflows",
     "reject",
     "run",
