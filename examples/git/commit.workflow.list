@@ -1,0 +1,20 @@
+# Git Commit
+# Purpose: Complete flow
+
+- (start) Check
+  - Run: git status
+
+- import: commit-validate.workflow.list
+- import: commit-type.workflow.list
+- import: commit-message.workflow.list
+
+- (format) Format
+  - Ask: Use? (yes/no)
+  - @format[1]: OK?
+
+- (preview) Preview
+  - Ask: Commit? (yes/no)
+  - @preview[1]: OK?
+
+- Execute: git commit
+- End

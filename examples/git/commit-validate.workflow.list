@@ -1,0 +1,10 @@
+# Workflow: Commit Validation
+# Purpose: Validate staged changes before commit
+# WHY: Prevent accidental sensitive file commits
+
+- (validate) Check Changes
+  # WHY: .env files contain secrets
+  - Check: No .env files staged
+  # WHY: Debug statements should not be committed
+  - Check: No debug statements
+  - @validate[1]: All passed?
