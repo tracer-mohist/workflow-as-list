@@ -1,5 +1,9 @@
 <!-- SYNTAX.md -->
-# WorkflowAsList Syntax Specification
+# WorkflowAsList DSL Syntax Specification
+
+**Language**: WorkflowAsList DSL
+
+**File Extension**: `.workflow.list`
 
 **Purpose**: Formal syntax definition with human-readable explanations.
 
