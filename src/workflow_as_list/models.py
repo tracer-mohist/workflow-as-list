@@ -106,5 +106,11 @@ class Config(BaseModel):
     )
 
     # Token length constraints (from design docs)
-    token_min: int = Field(default=282)
-    token_max: int = Field(default=358)
+    token_hub_lower: int = Field(
+        default=282,
+        description="Recommended minimum hub tokens (warning if below)",
+    )
+    token_hub_upper: int = Field(
+        default=358,
+        description="Maximum hub tokens before decomposition required (error if above)",
+    )

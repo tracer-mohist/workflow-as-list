@@ -54,6 +54,7 @@ def run_security_checks(
     NOTE: Layer 7 is TBD (reserved for future extension).
     """
     errors = []
+    warnings = []
 
     # Layer 1: Encoding
     passed, error = check_encoding(content)
@@ -66,15 +67,16 @@ def run_security_checks(
     if not passed:
         errors.append(f"[Layer 2] Blacklist patterns found: {matches}")
 
-    # Layer 3: Token length
-    passed, token_count = check_token_length(
-        content, config.token_min, config.token_max
+    # Layer 3: Token length (design guidance)
+    passed, token_count, suggestion = check_token_length(
+        content, config.token_hub_lower, config.token_hub_upper
     )
     if not passed:
-        assert token_count is not None
-        errors.append(
-            f"[Layer 3] Token count {token_count} not in range [{config.token_min}, {config.token_max}]"
-        )
+        # Above upper bound - error (required action)
+        errors.append(f"[Layer 3] {suggestion}")
+    elif suggestion:
+        # Below lower bound - warning (optional improvement)
+        warnings.append(f"[Layer 3] {suggestion}")
 
     # Layer 4: Feature scan
     passed, issues = check_features(content)

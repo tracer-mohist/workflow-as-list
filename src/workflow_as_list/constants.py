@@ -61,11 +61,26 @@ DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 8080
 
 # =============================================================================
-# Token Constraints
+# Token Constraints (Hub Token Bounds)
 # =============================================================================
 
-TOKEN_MIN = 282
-TOKEN_MAX = 358
+TOKEN_HUB_LOWER = 282
+"""
+Recommended minimum hub tokens for complete task description.
+
+Why: Task descriptions below this may lack context for reliable execution.
+Strategy: If below, warn user to consider adding constraints or preconditions.
+Reference: docs/research/theory/003-limits.md (Effective Context Square Root Formula)
+"""
+
+TOKEN_HUB_UPPER = 358
+"""
+Maximum hub tokens before task decomposition required.
+
+Why: Complex descriptions increase execution ambiguity.
+Strategy: Apply Divide and Conquer - decompose into parent + subtasks.
+Reference: docs/research/theory/003-limits.md (Effective Context Square Root Formula)
+"""
 
 # =============================================================================
 # Directory Initialization

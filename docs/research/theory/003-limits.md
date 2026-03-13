@@ -27,8 +27,8 @@ Where:
 ```
 
 For 128k models:
-- TaskToken_min = √(128,000 × 0.618) ≈ 281 tokens
-- TaskToken_max = √128,000 ≈ 358 tokens
+- TaskToken_hub_lower = √(128,000 × 0.618) ≈ 281 tokens
+- TaskToken_hub_upper = √128,000 ≈ 358 tokens
 - Recommended range: 282-358 tokens
 
 TIP: Use scripts/calc-task-range.py to calculate for any model.
@@ -109,7 +109,7 @@ Network structure:
 
 ## Model-Specific Limits
 
-| Context | TaskToken_min | TaskToken_max | Range |
+| Context | TaskToken_hub_lower | TaskToken_hub_upper | Range |
 |---------|---------------|---------------|-------|
 | 32k | 141 tokens | 179 tokens | 141-179 |
 | 64k | 199 tokens | 253 tokens | 199-253 |

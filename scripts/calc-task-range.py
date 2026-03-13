@@ -28,8 +28,8 @@ def calc(ctx):
         "context_limit": limit,
         "context_effective": effective,
         "overflow_cache": limit - effective,
-        "task_token_min": round(t_min, 2),
-        "task_token_max": round(t_max, 2),
+        "task_token_hub_lower": round(t_min, 2),
+        "task_token_hub_upper": round(t_max, 2),
         "recommended": [math.ceil(t_min), math.floor(t_max)],
     }
 

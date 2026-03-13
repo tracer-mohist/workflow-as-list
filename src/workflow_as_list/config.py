@@ -4,7 +4,7 @@
 import configparser
 from pathlib import Path
 
-from .constants import CONFIG_FILE, PROJECT_ROOT, TOKEN_MAX, TOKEN_MIN
+from .constants import CONFIG_FILE, PROJECT_ROOT, TOKEN_HUB_LOWER, TOKEN_HUB_UPPER
 from .models import Config
 
 DEFAULT_CONFIG = Config(
@@ -14,8 +14,8 @@ DEFAULT_CONFIG = Config(
     host="127.0.0.1",
     port=8080,
     config_dir=str(PROJECT_ROOT),
-    token_min=TOKEN_MIN,
-    token_max=TOKEN_MAX,
+    token_hub_lower=TOKEN_HUB_LOWER,
+    token_hub_upper=TOKEN_HUB_UPPER,
 )
 
 
@@ -70,10 +70,14 @@ def load_config(config_paths: list[Path] | None = None) -> Config:
 
             # Parse constraints section
             if "constraints" in config:
-                if "token_min" in config["constraints"]:
-                    data["token_min"] = config["constraints"].getint("token_min")
-                if "token_max" in config["constraints"]:
-                    data["token_max"] = config["constraints"].getint("token_max")
+                if "token_hub_lower" in config["constraints"]:
+                    data["token_hub_lower"] = config["constraints"].getint(
+                        "token_hub_lower"
+                    )
+                if "token_hub_upper" in config["constraints"]:
+                    data["token_hub_upper"] = config["constraints"].getint(
+                        "token_hub_upper"
+                    )
 
     return Config(**data)
 

@@ -3,7 +3,7 @@
 
 REFERENCE: docs/design/security/005-layers.md
 - Layer 1: Encoding check
-- Layer 3: Token length check
+- Layer 3: Token length check (design guidance)
 - Layer 4: Feature scan
 """
 
@@ -11,7 +11,7 @@ REFERENCE: docs/design/security/005-layers.md
 def check_encoding(content: str) -> tuple[bool, str | None]:
     """Check if content is ASCII-only.
 
-    WHY: Maximum encoding compatibility across platforms and agents.
+    Why: Maximum encoding compatibility across platforms and agents.
     """
     try:
         content.encode("ascii")
@@ -24,21 +24,54 @@ def check_encoding(content: str) -> tuple[bool, str | None]:
 
 
 def check_token_length(
-    content: str, min_len: int = 282, max_len: int = 358
-) -> tuple[bool, int | None]:
-    """Check if content length is within acceptable range.
+    content: str, lower_bound: int = 282, upper_bound: int = 358
+) -> tuple[bool, int, str | None]:
+    """Check token length and provide design guidance.
 
-    WHY: Bounded thinking constraint. Prevents overly complex workflows.
-    NOTE: Token count = byte count for ASCII content.
+    Why: Optimal cognitive load for agent execution.
+    Note: Token count = byte count for ASCII content.
+
+    Returns:
+        (is_valid, token_count, suggestion)
+
+        is_valid: True if task can proceed (warnings allowed)
+        token_count: Byte count of content
+        suggestion: Non-empty if guidance needed
+
+    Guidance cases:
+        - Below lower_bound: Warning (optional improvement)
+          Suggestion: Add constraints, preconditions, or outcomes
+
+        - Above upper_bound: Error (required action)
+          Suggestion: Apply Divide and Conquer strategy
     """
     token_count = len(content.encode("utf-8"))
 
-    if token_count < min_len:
-        return False, token_count
-    if token_count > max_len:
-        return False, token_count
+    if token_count > upper_bound:
+        return (
+            False,
+            token_count,
+            (
+                "Token count exceeds recommended maximum.\n"
+                "Why: Complex descriptions increase execution ambiguity.\n"
+                "Required: Apply Divide and Conquer strategy.\n"
+                "Pattern: One parent task + multiple focused subtasks."
+            ),
+        )
 
-    return True, token_count
+    if token_count < lower_bound:
+        return (
+            True,
+            token_count,
+            (
+                "Token count below recommended minimum.\n"
+                "Why: Brief descriptions may lack context for reliable execution.\n"
+                "Optional: Consider adding constraints, preconditions, or outcomes.\n"
+                "Note: Ignore if task is intentionally simple."
+            ),
+        )
+
+    return True, token_count, None
 
 
 def check_features(content: str) -> tuple[bool, list[str]]:
@@ -50,7 +83,7 @@ def check_features(content: str) -> tuple[bool, list[str]]:
     - Jump format: @tag[N]: condition?
     - Import format: import: path
 
-    WHY: Ensure workflow follows 5-rule syntax before execution.
+    Why: Ensure workflow follows 5-rule syntax before execution.
     """
     issues = []
     lines = content.split("\n")
@@ -93,8 +126,8 @@ def check_whitelist(
 ) -> tuple[bool, str | None]:
     """Check if content matches whitelist (if enabled).
 
-    WHY: Additional security layer for high-trust workflows.
-    NOTE: Opt-in only. Empty whitelist + enabled = reject all.
+    Why: Additional security layer for high-trust workflows.
+    Note: Opt-in only. Empty whitelist + enabled = reject all.
     """
     if not enabled:
         return True, None  # Skip if not enabled

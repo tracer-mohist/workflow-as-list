@@ -71,37 +71,42 @@ class TestCheckBlacklist:
 
 
 class TestCheckTokenLength:
-    """Layer 3: Token length check tests."""
+    """Layer 3: Token length check tests (design guidance)."""
 
     def test_valid_length_passes(self):
         """Scenario: Content length in valid range [282, 358].
-        Expected: Returns (True, token_count).
+        Expected: Returns (True, token_count, None).
         If fails: Valid workflows rejected.
         """
         content = "x" * 300  # 300 bytes
-        passed, token_count = check_token_length(content, 282, 358)
+        passed, token_count, suggestion = check_token_length(content, 282, 358)
         assert passed is True
         assert token_count == 300
+        assert suggestion is None
 
-    def test_too_short_fails(self):
+    def test_below_minimum_warning(self):
         """Scenario: Content below minimum length.
-        Expected: Returns (False, token_count).
-        If fails: Under-length workflows accepted.
+        Expected: Returns (True, token_count, suggestion) - warning but allowed.
+        If fails: Under-length workflows rejected (should be warning only).
         """
         content = "x" * 100
-        passed, token_count = check_token_length(content, 282, 358)
-        assert passed is False
+        passed, token_count, suggestion = check_token_length(content, 282, 358)
+        assert passed is True  # Warning, not error
         assert token_count == 100
+        assert suggestion is not None
+        assert "below recommended minimum" in suggestion
 
-    def test_too_long_fails(self):
+    def test_above_maximum_error(self):
         """Scenario: Content exceeds maximum length.
-        Expected: Returns (False, token_count).
+        Expected: Returns (False, token_count, suggestion) - error.
         If fails: Over-length workflows accepted.
         """
         content = "x" * 500
-        passed, token_count = check_token_length(content, 282, 358)
-        assert passed is False
+        passed, token_count, suggestion = check_token_length(content, 282, 358)
+        assert passed is False  # Error, must decompose
         assert token_count == 500
+        assert suggestion is not None
+        assert "Divide and Conquer" in suggestion
 
 
 class TestCheckFeatures:

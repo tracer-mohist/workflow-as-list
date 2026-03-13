@@ -27,8 +27,8 @@ Where:
 ```
 
 For 128k models:
-- TaskToken_min = √(128,000 × 0.618) ≈ 281 tokens
-- TaskToken_max = √128,000 ≈ 358 tokens
+- TaskToken_hub_lower = √(128,000 × 0.618) ≈ 281 tokens
+- TaskToken_hub_upper = √128,000 ≈ 358 tokens
 - Recommended range: 282-358 tokens
 
 ---
@@ -124,8 +124,8 @@ Rationale:
 
 Complete formula:
 ```
-TaskToken_min = √(N × 0.618)
-TaskToken_max = √N
+TaskToken_hub_lower = √(N × 0.618)
+TaskToken_hub_upper = √N
 
 Range: [√(N × 0.618), √N]
 ```
