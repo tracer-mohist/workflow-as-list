@@ -1,0 +1,51 @@
+# decision-capture.workflow.list
+# Purpose: Route information to correct destination (Issue vs Docs)
+#
+# Contract:
+#   Pre:  Have information/decision to record
+#   Post: Information stored in appropriate place
+#   Invariant: No decision lost, no docs polluted with tmp
+#
+# Philosophy:
+#   Issue = Temporary decisions (short lifetime, project-specific)
+#   Docs = Permanent rules (long lifetime, general principles)
+#   Arrow: -> (ASCII, not unicode)
+
+# WHY: Temporary decisions clutter docs, permanent ideas need docs not issues
+- (classify) Determine destination based on lifetime and scope
+  - Ask: Will this be relevant in 6 months? (yes/no)
+  - Ask: Is this project-specific or general? (specific/general)
+  - Rule: If no OR specific -> Issue (temporary)
+  - Rule: If yes AND general -> Docs (permanent)
+
+# WHY: Issues have structure for decision tracking (labels, assignees, discussions)
+- (create-issue) If temporary decision:
+  - Show: Available issue templates
+  - Ask: Use decision.yml template? (yes/no)
+  - If yes: Open GitHub issue with decision template
+  - Fields: Title, Decision context, Options considered, Rationale
+  - Tags: decision, tmp
+  - Assign: Decision owner (optional)
+  - Link: Related files/code (if any)
+
+# WHY: Docs are for timeless rules (functors, not instances)
+- (update-docs) If permanent rule:
+  - Ask: Which doc needs update? (README, docs/, workflow/)
+  - Ask: What section? (or create new)
+  - Format: Follow prompt-engineering principles
+  - Commit: "docs: <decision summary>"
+  - Push: Create PR if needed
+
+# WHY: Decisions should be traceable bidirectionally
+- (link) Cross-reference issue and docs
+  - If issue: Add link to related docs (if any) in issue description
+  - If docs: Add link to decision issue (if any) in doc comments
+  - Ask: Any related issues/PRs to link? (yes/no)
+
+# WHY: Verify decision is properly recorded before moving on
+- (verify) Confirm recording is complete
+  - If issue: Show issue URL, ask "Accessible and clear?" (yes/no)
+  - If docs: Show git diff, ask "Changes accurate?" (yes/no)
+  - If no: Fix before exiting
+
+- End
