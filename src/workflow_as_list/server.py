@@ -4,10 +4,17 @@
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 
 from .constants import ensure_directories
 from .executor import Executor, WorkflowParser
 from .models import AuditStatus
+
+
+class StepAdvance(BaseModel):
+    """Request body for advancing execution step."""
+
+    output: str | None = None  # Optional step output to store
 
 
 def create_app() -> FastAPI:
@@ -82,6 +89,56 @@ def create_app() -> FastAPI:
         if not execution:
             raise HTTPException(status_code=404, detail="Execution not found")
         return execution
+
+    @app.post("/executions/{execution_id}/next", tags=["executions"])
+    def advance_execution(execution_id: str, request: StepAdvance = None):
+        """Advance execution to next step.
+
+        Shows current step, stores output (if provided), advances execution,
+        and returns next step content.
+
+        Request body (optional):
+        - output: Step output to store
+
+        Response:
+        - current_step: Step that was just completed
+        - next_step: Next step content (null if completed)
+        - status: Execution status
+        """
+        execution = executor.get_execution(execution_id)
+        if not execution:
+            raise HTTPException(status_code=404, detail="Execution not found")
+
+        # Load workflow and parse
+        workflow = executor.get_workflow(execution.workflow_name)
+        if not workflow:
+            raise HTTPException(status_code=404, detail="Workflow not found")
+
+        content = Path(workflow.file_path).read_text()
+        parser = WorkflowParser(content)
+        parser.parse()
+
+        # Get current step BEFORE advancing
+        current_step = executor.get_next_step(execution, parser)
+
+        # Store output if provided
+        if request and request.output:
+            executor.store_output(execution_id, execution.current_step, request.output)
+
+        # Advance execution
+        executor.advance_execution(execution)
+
+        # Get next step AFTER advancing
+        next_step = executor.get_next_step(execution, parser)
+
+        return {
+            "execution_id": execution_id,
+            "current_step": current_step,
+            "next_step": next_step,
+            "step_index": execution.current_step,
+            "steps_total": execution.steps_total,
+            "completed": next_step is None,
+        }
 
     return app
 
