@@ -13,7 +13,7 @@ DEFAULT_CONFIG = Config(
     enable_whitelist=False,
     host="127.0.0.1",
     port=8080,
-    config_dir="~/.workflow-as-list",
+    config_dir=str(Path.home() / ".workflow-as-list"),
     token_min=TOKEN_MIN,
     token_max=TOKEN_MAX,
 )
@@ -80,6 +80,6 @@ def load_config(config_paths: list[Path] | None = None) -> Config:
 
 def ensure_config_dir(config: Config) -> Path:
     """Ensure configuration directory exists."""
-    config_dir = Path(config.config_dir).expanduser()
+    config_dir = Path(config.config_dir)
     config_dir.mkdir(parents=True, exist_ok=True)
     return config_dir

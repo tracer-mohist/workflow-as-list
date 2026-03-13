@@ -3,6 +3,7 @@
 
 from datetime import UTC, datetime
 from enum import Enum
+from pathlib import Path
 
 from pydantic import BaseModel, Field
 
@@ -99,7 +100,9 @@ class Config(BaseModel):
     port: int = Field(default=8080)
 
     # Paths
-    config_dir: str = Field(default="~/.config/wf")
+    config_dir: str = Field(
+        default_factory=lambda: str(Path.home() / ".workflow-as-list")
+    )
 
     # Token length constraints (from design docs)
     token_min: int = Field(default=282)
