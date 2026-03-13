@@ -188,11 +188,11 @@ def print_status() -> None:
     info = status()
 
     if info["running"]:
-        print(f"✓ Server running (PID: {info['pid']})")
+        print(f"[OK] Server running (PID: {info['pid']})")
         print(f"  Host: {info['host']}")
         print(f"  Port: {info['port']}")
         print(f"  URL: http://{info['host']}:{info['port']}")
         print(f"  API: http://{info['host']}:{info['port']}/docs")
     else:
-        print("✗ Server not running")
+        print("[NO] Server not running")
         print("  Start with: workflow server start")

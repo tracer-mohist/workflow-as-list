@@ -4,15 +4,22 @@
 import configparser
 from pathlib import Path
 
-from .constants import CONFIG_FILE, PROJECT_ROOT, TOKEN_HUB_LOWER, TOKEN_HUB_UPPER
+from .constants import (
+    CONFIG_FILE,
+    DEFAULT_HOST,
+    DEFAULT_PORT,
+    PROJECT_ROOT,
+    TOKEN_HUB_LOWER,
+    TOKEN_HUB_UPPER,
+)
 from .models import Config
 
 DEFAULT_CONFIG = Config(
     blacklist=[],
     whitelist=[],
     enable_whitelist=False,
-    host="127.0.0.1",
-    port=8080,
+    host=DEFAULT_HOST,
+    port=DEFAULT_PORT,
     config_dir=str(PROJECT_ROOT),
     token_hub_lower=TOKEN_HUB_LOWER,
     token_hub_upper=TOKEN_HUB_UPPER,

@@ -1,4 +1,11 @@
-"""workflow exec command - Execution instance management."""
+"""workflow exec command - Execution instance management for progressive reading.
+
+Design:
+- read: Read current step content (mark as read)
+- next: Advance to next step (must read first)
+
+Progressive reading ensures Agent cannot skip steps without reading.
+"""
 
 from pathlib import Path
 
@@ -17,17 +24,22 @@ def print_output(type: OutputType, message: str):
     console.print(f"[{type.value}] {message}")
 
 
-app = typer.Typer(help="Execution instance management")
+app = typer.Typer(help="Execution instance management (progressive reading)")
 
 
-@app.command("show")
-def exec_show(
+@app.command("read")
+def exec_read(
     execution_id: str = typer.Argument(..., help="Execution instance ID"),
 ):
-    """Show execution instance details.
+    """Read current step content and mark as read.
+
+    Agent reads the current step, understands it, then executes operations
+    using its own tools (git, file operations, API calls, etc.).
+
+    After reading and executing, call 'workflow exec next' to advance.
 
     Example:
-        workflow exec show commit-abc123
+        workflow exec read commit-abc123
     """
     ensure_directories()
     executor = Executor()
@@ -40,37 +52,6 @@ def exec_show(
         )
         raise typer.Exit(4)
 
-    console.print(f"Execution: {execution.execution_id}")
-    console.print(f"  Workflow: {execution.workflow_name}")
-    console.print(f"  Status: {execution.status.value}")
-    console.print(f"  Step: {execution.current_step}/{execution.steps_total}")
-    console.print(f"  Outputs: {execution.outputs_path}")
-
-
-@app.command("next")
-def exec_next(
-    execution_id: str = typer.Argument(..., help="Execution instance ID"),
-    output: str = typer.Option(None, "-o", "--output", help="Step output to store"),
-    quiet: bool = typer.Option(False, "-q", "--quiet", help="Quiet mode (no output)"),
-):
-    """Mark current step complete and advance to next step.
-
-    Shows current step content, stores output (if provided), advances execution,
-    and displays next step content.
-
-    Example:
-        workflow exec next commit-abc123
-        workflow exec next commit-abc123 -o "result"
-        workflow exec next commit-abc123 -q  # Quiet mode for scripts
-    """
-    ensure_directories()
-    executor = Executor()
-
-    execution = executor.get_execution(execution_id)
-    if not execution:
-        print_output(OutputType.ERROR, f"Execution not found: {execution_id}")
-        raise typer.Exit(4)
-
     # Load workflow and parse
     workflow = executor.get_workflow(execution.workflow_name)
     if not workflow:
@@ -81,40 +62,84 @@ def exec_next(
     parser = WorkflowParser(content)
     parser.parse()
 
-    # Get current step BEFORE advancing
+    # Get current step
     current_step = executor.get_next_step(execution, parser)
+    if current_step is None:
+        print_output(OutputType.SUCCESS, f"Execution completed: {execution_id}")
+        console.print(f"  All {execution.steps_total} steps completed")
+        return
 
-    # Show current step (unless quiet mode)
-    if not quiet and current_step:
-        console.print(
-            f"[INFO] Current step {execution.current_step + 1}/{execution.steps_total}:"
+    # Display current step content
+    console.print(f"[INFO] Step {execution.current_step + 1}/{execution.steps_total}:")
+    console.print(f"  {current_step['content']}")
+    if current_step.get("metadata"):
+        console.print(f"  Comments ({len(current_step['metadata'])}):")
+        for comment in current_step["metadata"]:
+            console.print(f"    {comment}")
+
+    # Mark as read (if not already)
+    if execution.current_step not in execution.steps_read:
+        execution.steps_read.append(execution.current_step)
+        executor.update_execution(execution)
+        console.print(f"\n[INFO] Step {execution.current_step + 1} marked as read")
+
+
+@app.command("next")
+def exec_next(
+    execution_id: str = typer.Argument(..., help="Execution instance ID"),
+):
+    """Advance to next step (must read current step first).
+
+    Checks if current step has been read (progressive reading enforcement).
+    If read, advances to next step. If not read, shows error.
+
+    Agent should:
+    1. workflow exec read <id> (read and understand)
+    2. Execute operations (using own tools)
+    3. workflow exec next <id> (advance when ready)
+
+    Example:
+        workflow exec next commit-abc123
+    """
+    ensure_directories()
+    executor = Executor()
+
+    execution = executor.get_execution(execution_id)
+    if not execution:
+        print_output(OutputType.ERROR, f"Execution not found: {execution_id}")
+        raise typer.Exit(4)
+
+    # Check if current step has been read
+    if execution.current_step not in execution.steps_read:
+        print_output(OutputType.ERROR, "Current step not read yet")
+        print_output(
+            OutputType.NEXT,
+            f"Read first: workflow exec read {execution_id}",
         )
-        console.print(f"  {current_step['content']}")
-        if current_step.get("metadata"):
-            for comment in current_step["metadata"][:3]:
-                console.print(f"  {comment}")
-
-    # Store output if provided
-    if output:
-        executor.store_output(execution_id, execution.current_step, output)
+        raise typer.Exit(1)
 
     # Advance execution
     executor.advance_execution(execution)
 
-    # Get next step AFTER advancing
+    # Check if completed
+    workflow = executor.get_workflow(execution.workflow_name)
+    if not workflow:
+        print_output(OutputType.ERROR, f"Workflow not found: {execution.workflow_name}")
+        raise typer.Exit(4)
+
+    content = Path(workflow.file_path).read_text()
+    parser = WorkflowParser(content)
+    parser.parse()
+
     next_step = executor.get_next_step(execution, parser)
     if next_step is None:
         print_output(OutputType.SUCCESS, f"Execution completed: {execution_id}")
-        console.print(f"  Final step: {execution.steps_total}/{execution.steps_total}")
+        console.print(f"  Total steps: {execution.steps_total}")
         return
 
-    # Show next step (unless quiet mode)
-    if not quiet:
-        print_output(
-            OutputType.SUCCESS,
-            f"Advanced to step {execution.current_step}/{execution.steps_total}",
-        )
-        console.print(f"  Next step: {next_step['content']}")
-        if next_step.get("metadata"):
-            for comment in next_step["metadata"][:3]:
-                console.print(f"  {comment}")
+    # Show progress (not content - Agent reads with 'read' command)
+    print_output(
+        OutputType.SUCCESS,
+        f"Advanced to step {execution.current_step + 1}/{execution.steps_total}",
+    )
+    console.print(f"  Read next: workflow exec read {execution_id}")

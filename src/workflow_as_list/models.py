@@ -7,6 +7,9 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field
 
+# Import token constants for Config defaults
+from .constants import TOKEN_HUB_LOWER, TOKEN_HUB_UPPER
+
 
 # Audit status for workflow lifecycle
 class AuditStatus(str, Enum):
@@ -62,6 +65,11 @@ class Execution(BaseModel):
 
     Created when workflow.run() is called.
     Stored in PROJECT_ROOT/state/executions/<name>-<timestamp>.json
+
+    Progressive reading design:
+    - Agent must read current step before advancing (steps_read tracking)
+    - steps_read contains indices of steps that have been read
+    - next command checks if current_step is in steps_read
     """
 
     execution_id: str = Field(..., description="Unique execution identifier")
@@ -78,6 +86,10 @@ class Execution(BaseModel):
     # Execution state
     steps_total: int = Field(default=0, description="Total steps in workflow")
     outputs_path: str = Field(default="", description="Path to outputs directory")
+    steps_read: list[int] = Field(
+        default_factory=list,
+        description="Indices of steps that have been read (progressive reading)",
+    )
 
 
 class Config(BaseModel):
@@ -107,10 +119,10 @@ class Config(BaseModel):
 
     # Token length constraints (from design docs)
     token_hub_lower: int = Field(
-        default=282,
+        default=TOKEN_HUB_LOWER,
         description="Recommended minimum hub tokens (warning if below)",
     )
     token_hub_upper: int = Field(
-        default=358,
+        default=TOKEN_HUB_UPPER,
         description="Maximum hub tokens before decomposition required (error if above)",
     )

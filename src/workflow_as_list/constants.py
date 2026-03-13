@@ -13,7 +13,6 @@ from pathlib import Path
 # Project Root
 # =============================================================================
 
-PROJECT_ROOT = Path.home() / ".workflow-as-list"
 """
 All workflow-as-list state lives here.
 
@@ -23,6 +22,8 @@ Why:
 - Easy backup: backup one directory
 - State visible: always know where to look
 """
+PROJECT_ROOT = Path.home() / ".workflow-as-list"
+LOGS_ROOT = PROJECT_ROOT / "logs"
 
 # =============================================================================
 # Configuration Files
@@ -36,7 +37,7 @@ REGISTRY_FILE = PROJECT_ROOT / "registry.jsonl"
 # =============================================================================
 
 PID_FILE = PROJECT_ROOT / "server.pid"
-SERVER_LOG = PROJECT_ROOT / "logs" / "server.log"
+SERVER_LOG = LOGS_ROOT / "server.log"
 
 # =============================================================================
 # State Directories
@@ -93,9 +94,9 @@ def ensure_directories() -> None:
     Creates PROJECT_ROOT and all subdirectories on first use.
     """
     PROJECT_ROOT.mkdir(parents=True, exist_ok=True)
+    LOGS_ROOT.mkdir(parents=True, exist_ok=True)
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     EXECUTIONS_DIR.mkdir(parents=True, exist_ok=True)
     OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     IMPORTS_CACHE.mkdir(parents=True, exist_ok=True)
-    (PROJECT_ROOT / "logs").mkdir(parents=True, exist_ok=True)
