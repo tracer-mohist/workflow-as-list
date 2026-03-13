@@ -1,0 +1,22 @@
+# Commit Type Helper
+
+- (start) Directory?
+  - src/ -> feat/fix
+  - tests/ -> test
+  - docs/ -> docs
+  - .github/ -> ci
+  - scripts/ -> chore
+
+- (type) Change?
+  - Feature -> feat
+  - Fix -> fix
+  - Docs -> docs
+  - Tests -> test
+  - Tools -> chore
+  - CI -> ci
+
+- (scope) Scope? (optional)
+
+- (desc) Description?
+
+- Output: <type>(<scope>): <desc>
