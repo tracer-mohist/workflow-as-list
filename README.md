@@ -63,6 +63,32 @@ uv pip install -e .
 
 ---
 
+## Directory Structure
+
+Default state location: `~/.workflow-as-list/`
+
+```
+~/.workflow-as-list/
+├── config.ini           # Configuration (optional)
+├── registry.jsonl       # Registered workflows
+├── server.pid           # Server process ID
+├── server.log           # Server logs
+├── state/
+│   ├── executions/      # Execution history
+│   └── outputs/         # Step outputs
+└── cache/
+    └── imports/         # Imported workflow cache
+```
+
+To reset all state:
+```bash
+rm -rf ~/.workflow-as-list/
+```
+
+NOTE: Single location for easy cleanup and backup.
+
+---
+
 ## Usage
 
 CLI commands:
