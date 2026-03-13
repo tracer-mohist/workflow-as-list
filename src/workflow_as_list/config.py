@@ -4,7 +4,7 @@
 import configparser
 from pathlib import Path
 
-from .constants import PROJECT_ROOT, TOKEN_MAX, TOKEN_MIN
+from .constants import CONFIG_FILE, PROJECT_ROOT, TOKEN_MAX, TOKEN_MIN
 from .models import Config
 
 DEFAULT_CONFIG = Config(
@@ -34,7 +34,7 @@ def load_config(config_paths: list[Path] | None = None) -> Config:
 
     # Load from files
     paths = config_paths or [
-        PROJECT_ROOT / "config.ini",
+        CONFIG_FILE,
         Path.cwd() / "workflow.ini",
     ]
 
