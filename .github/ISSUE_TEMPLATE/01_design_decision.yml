@@ -1,0 +1,105 @@
+name: Design Decision
+description: Record and track architectural decisions (ADR)
+title: "[DECISION]: "
+labels: ["decision", "adr"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Architecture Decision Record
+        
+        Use this template to document and track important technical decisions.
+        
+        NOTE: You must fill in the commit hash after implementation
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context and Problem
+      description: What problem are you solving?
+      placeholder: |
+        Problem: ...
+        Impact: ...
+        Why now: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: What options did you consider? Why rejected?
+      placeholder: |
+        Option A: ...
+        Pros: ...
+        Cons: ...
+        Why rejected: ...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: decision-type
+    attributes:
+      label: Decision Type
+      description: What area does this affect?
+      options:
+        - Architecture
+        - API Design
+        - Database/Storage
+        - Security
+        - Performance
+        - Tools/Technology
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: decision
+    attributes:
+      label: Decision
+      description: What is the final decision? Why?
+      placeholder: |
+        Decision: ...
+        Rationale: ...
+        Trade-offs: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: consequences
+    attributes:
+      label: Consequences
+      description: Positive and negative impacts
+      placeholder: |
+        Positive: ...
+        Negative: ...
+    validations:
+      required: false
+
+  - type: input
+    id: implementation-commit
+    attributes:
+      label: Implementation Commit
+      description: Commit SHA (fill after decision)
+      placeholder: a1b2c3d4
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: closure-conditions
+    attributes:
+      label: Closure Conditions
+      description: What must be done before closing?
+      options:
+        - label: Decision discussed and agreed
+          required: true
+        - label: Code merged to main
+          required: true
+        - label: Documentation updated
+          required: true
+        
+  - type: markdown
+    attributes:
+      value: |
+        TIP: When closing, update the final commit hash in a comment

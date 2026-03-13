@@ -1,0 +1,64 @@
+name: Feature Request
+description: Suggest a new feature or improvement
+title: "[FEATURE]: "
+labels: ["enhancement"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Feature Request
+        
+        Use this template to suggest new features.
+        
+        Before submitting:
+        - Search existing issues to avoid duplicates
+        - Consider if this fits project scope
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this solve?
+      placeholder: |
+        I am trying to...
+        But currently I cannot...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Solution
+      description: What should the feature do?
+      placeholder: |
+        I would like to...
+        Example: ...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Impact Level
+      description: How important is this?
+      options:
+        - Critical
+        - High
+        - Medium
+        - Low
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: closure-conditions
+    attributes:
+      label: Closure Conditions
+      options:
+        - label: Design approved
+          required: true
+        - label: Implementation completed
+          required: true
+        - label: Tests added
+          required: true
+        - label: Documentation updated

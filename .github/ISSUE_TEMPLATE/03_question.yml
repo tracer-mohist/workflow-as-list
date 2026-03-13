@@ -1,0 +1,60 @@
+name: Question
+description: Ask a question about the project
+title: "[QUESTION]: "
+labels: ["question"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Question
+        
+        Use this template to ask questions.
+        
+        Before submitting:
+        - Check documentation (README, docs/)
+        - Search existing issues
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      description: What is your question about?
+      options:
+        - Installation/Setup
+        - Usage/How-to
+        - API/Interface
+        - Configuration
+        - Troubleshooting
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What do you want to know?
+      placeholder: I want to understand...
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What have you tried?
+      placeholder: |
+        I have tried:
+        1. ...
+        2. ...
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: closure-conditions
+    attributes:
+      label: Closure Conditions
+      options:
+        - label: Answer provided
+          required: true
