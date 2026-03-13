@@ -21,7 +21,7 @@ Why: Full name, readable, tab-completion.
 
 ---
 
-## Core Subcommands (7)
+## Core Subcommands (6)
 
 ### Registration
 
@@ -49,9 +49,24 @@ Purpose: Reject workflow.
 
 **workflow run <name>**
 
-Purpose: Execute approved workflow.
+Purpose: Create execution instance for approved workflow.
 
 Requirement: Status = APPROVED, hash matches.
+
+NOTE: This only creates execution instance, does not execute steps.
+Use \`workflow exec\` for step-by-step execution.
+
+---
+
+### Execution Management
+
+**workflow exec <execution-id> --show**
+
+Purpose: View execution instance details.
+
+**workflow exec <execution-id> --next**
+
+Purpose: Mark current step complete, advance to next step.
 
 ---
 
@@ -63,17 +78,27 @@ Purpose: List all workflows with status.
 
 **workflow show <name>**
 
-Purpose: Show workflow details and logs.
+Purpose: Show workflow definition details (not execution instances).
 
 ---
 
 ### Server
 
-**workflow serve**
+**workflow server start**
 
-Purpose: Start HTTP server.
+Purpose: Start HTTP server in background mode.
 
-Options: --host, --port
+**workflow server stop**
+
+Purpose: Stop background server.
+
+**workflow server status**
+
+Purpose: Check server running status.
+
+**workflow server logs -f**
+
+Purpose: View server logs (follow mode).
 
 ---
 
@@ -122,9 +147,16 @@ Project: .wf/config.ini (optional, future)
 
 ## Design Decisions
 
-DECISION: 2026-03-09 — 7 core subcommands only.
+DECISION: 2026-03-09 — 6 core subcommands only.
 
 WHY: Minimal complete set. UNIX philosophy.
+
+---
+
+DECISION: 2026-03-13 — Removed \`workflow serve\` command.
+
+WHY: Redundant with \`workflow server start\`. Lower efficiency (blocks terminal).
+Users can use \`uv run uvicorn\` directly for foreground debugging.
 
 ---
 

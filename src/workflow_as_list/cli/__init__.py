@@ -12,7 +12,6 @@ from .check import check
 from .list import list_workflows
 from .reject import reject
 from .run import run
-from .serve import serve
 from .server import app as server_app
 from .show import show
 
@@ -26,7 +25,6 @@ app.command()(reject)
 app.command()(run)
 app.command(name="list")(list_workflows)
 app.command()(show)
-app.command()(serve)
 app.add_typer(server_app, name="server")
 
 
@@ -43,7 +41,6 @@ __all__ = [
     "list_workflows",
     "reject",
     "run",
-    "serve",
     "show",
     "server_app",
 ]
