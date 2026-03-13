@@ -3,13 +3,15 @@
 # Usage: workflow check examples/git/commit.workflow.list
 # Reference: https://www.conventionalcommits.org/en/v1.0.0/
 
-- (start) Show staged changes with git status --short and validate no sensitive files (.env, debug code) are committed
-  # WHY: Ensure clean changes before composing message
+# WHY: Show staged changes and validate before composing message
+# NOTE: Check for .env files and debug statements (common mistakes)
+- (start) Show staged changes with git status --short and validate no sensitive files are committed
   - Ask: Ready to commit? (yes/no, fix issues first if no)
   - @start[1]: Ready?
 
+# WHY: Header is required per spec, type determines version bump (feat->MINOR, fix->PATCH)
+# NOTE: Type selection based on directory and change type
 - (header) Compose commit message header following Conventional Commits format: type[scope]: description
-  # WHY: Header is required, type determines version bump (feat->MINOR, fix->PATCH)
   - Ask: Type? (feat/new feature, fix/bug fix, docs/documentation, test/tests only, chore/tools, ci/CI/CD, refactor/restructure)
   - Ask: Scope? (optional: cli/executor/security/parser/server, skip if unclear)
   - Ask: Description? (imperative mood, lowercase start, no period, under 72 characters)
@@ -20,19 +22,21 @@
     
     [optional footer - BREAKING CHANGE: / Closes #]
 
+# WHY: Body explains WHY not WHAT, optional for complex changes
+# NOTE: Wrap at 72 characters, use for motivation and alternatives
 - (body) Ask if body is needed for complex changes that require explanation
-  # WHY: Body explains WHY not WHAT, wrap at 72 characters
   - Ask: Need body? (yes/no, yes if change needs context or motivation)
   - If yes: Ask: Body content? (explain motivation, alternatives considered, assumptions)
 
+# WHY: BREAKING CHANGE triggers MAJOR version, issue links close tickets
+# NOTE: Footer is optional, use when applicable
 - (footer) Ask if footer is needed for BREAKING CHANGE or issue links
-  # WHY: BREAKING CHANGE triggers MAJOR version, issue links close tickets
   - Ask: Breaking API change? (yes -> add BREAKING CHANGE: <description> in footer)
   - Ask: Issue to close? (yes -> add Closes #<number> in footer)
 
+# WHY: Final review before irreversible action
+# NOTE: Full format has header, blank line, body (optional), blank line, footer (optional)
 - (confirm) Show full formatted commit message with header, body (if any), and footer (if any), ask for final confirmation
-  # WHY: Final review before irreversible action
-  # NOTE: Full format has header, blank line, body (optional), blank line, footer (optional)
   - Ask: Confirm and execute git commit? (yes/no)
   - @confirm[1]: Confirmed?
   - Execute: git commit -m "<full message>"
