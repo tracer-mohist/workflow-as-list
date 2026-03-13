@@ -1,6 +1,141 @@
 # CHANGELOG
 
 
+## v0.1.2 (2026-03-13)
+
+### Bug Fixes
+
+- Check token length per line (not whole file)
+  ([`62cad0a`](https://github.com/tracer-mohist/workflow-as-list/commit/62cad0ac56678e682b591f1905bb6f390e991329))
+
+- validator.py: Check each line's byte count, not entire file - layers.py: Handle per-line errors
+  and warnings - tests: Update test cases for per-line checking
+
+Why: - Token limit (282-358) is per task, not per file - Each line is a task description - Previous
+  implementation was incorrect
+
+Design: - Skip comments and empty lines - Check each content line's byte count - Return errors
+  (exceeds) and warnings (below)
+
+Reference: docs/research/theory/003-limits.md - TaskToken_range = [√(N × 0.618), √N] - Per task
+  description, not entire workflow
+
+### Chores
+
+- Add GitHub Issue Forms templates
+  ([`eb2af70`](https://github.com/tracer-mohist/workflow-as-list/commit/eb2af7059b609ac78dfd3749d4cce7986bd2d6f1))
+
+- 01_design_decision.yml: ADR with commit hash binding - 02_feature_request.yml: Feature requests -
+  03_question.yml: Questions - 04_bug_report.yml: Bug reports
+
+Design: - Simple English (prompt-engineering Layer 1) - Minimal fields (only what's needed) - Clear
+  placeholders (show, don't tell) - LABEL: annotations (NOTE:, TIP:) - No emoji, no ** emphasis - No
+  config.yml (unnecessary complexity)
+
+Why: - Issues as /tmp for temporary decisions - Docs for long-term knowledge - Clear separation:
+  knowledge vs process - Traceable decisions (commit hash)
+
+REFERENCE: docs/github-issue-templates-research.md
+
+- Garden docs (deprecation cycle)
+  ([`1f7ce1c`](https://github.com/tracer-mohist/workflow-as-list/commit/1f7ce1c094b451d1dc02431c5b5833115f5487e4))
+
+- Remove docs/v0.1.1-plan.md (completed, migrated to issues) - Update README.md with directory
+  structure - Create issues for remaining documentation tasks
+
+Design: - Deprecation cycle: mark → migrate → remove - Issues track pending work (not docs) - README
+  documents current state
+
+Issues created: - #25: Update README.md with directory structure - #26: Update AGENTS.md
+  architecture diagram
+
+REFERENCE: docs/github-issue-templates-research.md (Issues as /tmp)
+
+### Documentation
+
+- Add commit workflow (Divide and Conquer example)
+  ([`c81bc1a`](https://github.com/tracer-mohist/workflow-as-list/commit/c81bc1a11c5f143c9fed03bab5db890162261c34))
+
+- commit.workflow.list: Main flow with imports - commit-validate.workflow.list: Check sensitive
+  files - commit-type.workflow.list: Choose correct type - commit-message.workflow.list: Compose
+  message per spec
+
+Design: - Apply Divide and Conquer (4 subtasks) - Each <358 bytes (token limit) - Import for
+  modularity - Comments explain WHY (Unix style)
+
+Why: - Demonstrate import feature - Show Divide and Conquer pattern - Help with Conventional Commits
+  - Prevent incorrect type usage
+
+REFERENCE: - https://www.conventionalcommits.org/en/v1.0.0/ - .github/COMMIT_CONVENTION.md -
+  examples/README.md (file header style)
+
+- Add commit-type helper workflow
+  ([`168b317`](https://github.com/tracer-mohist/workflow-as-list/commit/168b3178cfb72138dacb1abbbf51493b3a76e3fe))
+
+- commit-type.workflow.list: Help choose correct Conventional Commits type - Simple reference:
+  src/=feat/fix, tests/=test, docs/=docs, etc.
+
+Why: - Prevent incorrect type usage (feat for non-src changes) - Quick reference for agent - Avoid
+  accidental version bumps
+
+NOTE: This is documentation, not a feature. Use as reference before writing commit message.
+
+REFERENCE: .github/COMMIT_CONVENTION.md
+
+- Add example workflows (git commit helper)
+  ([`b43af45`](https://github.com/tracer-mohist/workflow-as-list/commit/b43af4562c5aa57ac971c1857745f1c98d72a546))
+
+- commit.workflow.list: Main workflow with imports - commit-validate.workflow.list: Validate staged
+  changes - commit-message.workflow.list: Compose Conventional Commit
+
+Design: - Apply Divide and Conquer (split into subtasks) - Each subtask <358 bytes (token limit) -
+  Import for modularity - Comments explain WHY, not WHAT
+
+Why: - First real-world example - Demonstrate import feature - Show Divide and Conquer in action -
+  Provide reusable template
+
+NOTE: Examples are documentation, not features. No version bump needed.
+
+REFERENCE: examples/README.md
+
+- Simplify commit workflow (single file)
+  ([`6ff37e6`](https://github.com/tracer-mohist/workflow-as-list/commit/6ff37e658ed74e60d922038009562ab291897be7))
+
+- Single commit.workflow.list (no sub-files) - Multi-level list structure (nested) - 350 bytes (<358
+  token limit) - 19 steps
+
+Design: - Nested lists for logical grouping - No import dependencies - Self-contained - Simple and
+  clear
+
+Why: - Easier to maintain (one file) - No dependency management - Clearer structure - Follows Unix
+  philosophy
+
+REFERENCE: examples/README.md
+
+### Refactoring
+
+- Rename TOKEN_MIN/MAX to TOKEN_HUB_LOWER/UPPER
+  ([`519c80a`](https://github.com/tracer-mohist/workflow-as-list/commit/519c80ac34e57fe6023b066823ae243656ff3caa))
+
+- constants.py: Rename with docstrings explaining purpose - validator.py: Return (is_valid, count,
+  suggestion) tuple - layers.py: Distinguish warning (below lower) vs error (above upper) -
+  config.py: Update config field names - models.py: Update Config model fields - tests: Update test
+  cases for new behavior - docs: Update documentation references - scripts: Update
+  calc-task-range.py
+
+Why: - Token bounds are both upper limits (√N formula variants) - Lower bound (282): Warning -
+  consider adding context - Upper bound (358): Error - apply Divide and Conquer
+
+Design: - Use consensus terminology (Divide and Conquer) - Self-contained messages (no external doc
+  references) - Abstract guidance (not specific examples)
+
+- Use CONFIG_FILE constant instead of redefining path
+  ([`450dc73`](https://github.com/tracer-mohist/workflow-as-list/commit/450dc73c175dbf1bb4f1bd7f7ef3dd30cb68f119))
+
+- config.py: Import and use CONFIG_FILE from constants - Why: DRY principle - single source of truth
+  for paths - Agent-friendly: no need to remember where paths are defined
+
+
 ## v0.1.1 (2026-03-13)
 
 ### Bug Fixes
