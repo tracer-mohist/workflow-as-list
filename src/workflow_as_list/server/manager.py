@@ -1,4 +1,4 @@
-# src/workflow_as_list/server_manager.py
+# src/workflow_as_list/server/manager.py
 """Server lifecycle management.
 
 Manages the uvicorn server process: start, stop, status, and logs.
@@ -10,7 +10,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from .constants import (
+from ..constants import (
     DEFAULT_HOST,
     DEFAULT_PORT,
     PID_FILE,

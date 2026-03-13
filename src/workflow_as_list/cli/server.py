@@ -5,7 +5,7 @@ from rich.console import Console
 
 from ..constants import DEFAULT_HOST, DEFAULT_PORT
 from ..models import OutputType
-from ..server_manager import logs, print_status, start, stop
+from ..server.manager import logs, print_status, start, stop
 
 console = Console()
 

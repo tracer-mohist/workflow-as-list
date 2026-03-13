@@ -1,4 +1,4 @@
-# src/workflow_as_list/server.py
+# src/workflow_as_list/server/app.py
 """FastAPI HTTP server with OpenAPI support."""
 
 from pathlib import Path
@@ -6,9 +6,9 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from .constants import ensure_directories
-from .executor import Executor, WorkflowParser
-from .models import AuditStatus
+from ..constants import ensure_directories
+from ..executor import Executor, WorkflowParser
+from ..models import AuditStatus
 
 
 class StepAdvance(BaseModel):
@@ -141,7 +141,3 @@ def create_app() -> FastAPI:
         }
 
     return app
-
-
-# Create app instance for uvicorn
-app = create_app()

@@ -47,18 +47,24 @@ Tag Universality: (tag) can modify any line type.
 
 ## Installation
 
-Requires Python 3.12+ and uv.
+### For Users (pipx)
+
+```bash
+# Install from GitHub Releases
+pipx install git+https://github.com/tracer-mohist/workflow-as-list.git
+```
+
+NOTE: pipx installs in isolated environment, no system pollution.
+
+### For Contributors (uv)
 
 ```bash
 # Clone repository
 git clone https://github.com/tracer-mohist/workflow-as-list.git
 cd workflow-as-list
 
-# Install with uv
+# Install with uv (development mode)
 uv sync
-
-# Install CLI to PATH (optional)
-uv pip install -e .
 ```
 
 ---
@@ -168,11 +174,31 @@ NOTE: Full extension for agent readability. Short forms like .wl reduce clarity.
 - Commit convention: `.github/COMMIT_CONVENTION.md`
 - Agent integration: See Issue #33
 
----
+## Repository Structure
 
-## License
-
-MIT
+```
+workflow-as-list/
+├── README.md              # This file (getting started)
+├── LICENSE                # MIT License
+├── CONTRIBUTING.md        # Contribution guidelines
+├── CHANGELOG.md           # Version history
+├── SYNTAX.md              # DSL syntax specification
+├── SYNTAX.ebnf            # Formal grammar
+│
+├── src/                   # Source code
+│   └── workflow_as_list/  # Python package
+├── tests/                 # Test suite
+├── docs/                  # Documentation
+├── examples/              # Example workflows
+├── scripts/               # Utility scripts
+│
+├── .github/               # GitHub configuration
+│   ├── ISSUE_TEMPLATE/    # Issue templates
+│   └── workflows/         # CI/CD workflows
+│
+├── pyproject.toml         # Python project configuration
+└── uv.lock                # Dependency lock file (uv)
+```
 
 ---
 
