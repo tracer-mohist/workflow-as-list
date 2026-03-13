@@ -1,6 +1,15 @@
 # CHANGELOG
 
 
+## v0.3.0 (2026-03-13)
+
+### Features
+
+- Implement progressive reading with steps_read tracking
+  ([#28](https://github.com/tracer-mohist/workflow-as-list/pull/28),
+  [`b1263bd`](https://github.com/tracer-mohist/workflow-as-list/commit/b1263bd1a620e5d602e36dce570d00eafeef3eaf))
+
+
 ## v0.2.0 (2026-03-13)
 
 ### Bug Fixes
