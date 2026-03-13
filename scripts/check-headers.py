@@ -2,6 +2,7 @@
 # scripts/check-headers.py
 # Automate relative path header insertion for Python projects
 # REFERENCE: check-headers.mjs (original inspiration)
+# NOTE: Uses logging.py for emoji-free output (prompt-engineering compliance)
 
 import os
 import sys

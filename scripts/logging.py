@@ -2,6 +2,7 @@
 # scripts/logging.py
 # Lightweight logging utility for workflow-as-list
 # NOTE: Extracted from check-headers.py for modularity (2026-03-13)
+# REFERENCE: docs/prompt-engineering/README.md (no emoji in content)
 
 from datetime import datetime
 
@@ -19,23 +20,23 @@ class Log:
 
     @staticmethod
     def step(msg):
-        print(f"\n{Log._timestamp()}  → {msg}")
+        print(f"\n{Log._timestamp()}  >> {msg}")
 
     @staticmethod
     def work(msg):
-        print(f"{Log._timestamp()}    • {msg}")
+        print(f"{Log._timestamp()}      - {msg}")
 
     @staticmethod
     def find(msg):
-        print(f"{Log._timestamp()}    ✓ {msg}")
+        print(f"{Log._timestamp()}      [OK] {msg}")
 
     @staticmethod
     def fail(msg):
-        print(f"{Log._timestamp()}    ✗ {msg}")
+        print(f"{Log._timestamp()}      [FAIL] {msg}")
 
     @staticmethod
     def warn(msg):
-        print(f"{Log._timestamp()}    ⚠ {msg}")
+        print(f"{Log._timestamp()}      [WARN] {msg}")
 
     @staticmethod
     def end(msg):
