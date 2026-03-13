@@ -1,0 +1,40 @@
+# main.workflow.list
+# Purpose: Entry point for project development
+#
+# Contract:
+#   Pre:  Git repository is valid (git status works)
+#   Post: Task completed, changes committed or discarded
+#   Invariant: Repository remains valid throughout
+#
+# Unix Philosophy:
+#   - Comments explain WHY, not WHAT
+#   - If this gets complex, simplify (don't add comments)
+
+# WHY: Need to know starting state before deciding what to do
+- (status) Show current repository state
+  - Run: git status --short
+  - Run: git log --oneline -3
+
+# WHY: Human intent drives the workflow, not the other way around
+- (identify) Ask what task to perform
+  - Ask: What do you want to do? (commit/push/release/other)
+
+# WHY: Use existing automation if available, otherwise manual is fine
+- (route) Execute based on choice
+  - If commit:
+    - Ask: Workflow exists? (yes/no)
+    - If yes: Run workflow run commit
+    - If no: Manual execution (git add, commit, etc.)
+  - If push:
+    - Run: git push
+    - Optional: Check CI status
+  - If other:
+    - Manual execution
+
+# WHY: Ensure repository is left in clean state
+- (verify) Confirm final state
+  - Run: git status
+  - Ask: Repository in expected state? (yes/no)
+  - If no: Fix before exiting
+
+- End
