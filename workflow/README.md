@@ -2,44 +2,46 @@
 
 Purpose: Use workflow-as-list to develop workflow-as-list.
 
-Philosophy: If we want others to trust our rules, we must use them ourselves.
+Not here: Generic templates → `examples/`
 
 ---
 
-## What
+## Mapping
 
-Workflows in this directory manage our own development.
+Format: `workflow/<name>.workflow.list`
 
-Not generic templates — project-specific.
+- `<name>`: Workflow identifier (single segment)
+
+Rule: Flat structure, routed by `main.workflow.list` (TODO).
 
 ---
 
-## Why
+## Constraints
 
-1. **Validation** — Real usage exposes abstraction leaks
-2. **Feedback** — Fast iteration (use → find issues → improve)
-3. **Trust** — We eat our own dogfood
+1. **Project-Specific** — Binds to workflow-as-list
+2. **Evolving** — Changes with project needs
+3. **Validated** — Must be used in real work
 
 ---
 
 ## Usage
 
 ```bash
-uv run workflow check workflow/<name>.workflow.list
-uv run workflow approve <name>
-uv run workflow run <name>
+workflow check workflow/<name>
+workflow approve <name>
+workflow run <name>
 ```
 
----
-
-## Relationship with examples/
-
-| `workflow/` | `examples/` |
-|-------------|-------------|
-| We use | Others learn |
-| Project-specific | General templates |
-| Evolves fast | Stable |
+Query structure: `ls workflow/`
 
 ---
 
-See: `examples/README.md` (design philosophy)
+## Philosophy
+
+If we want others to trust our rules, we must use them ourselves.
+
+See: `examples/README.md` (template extraction)
+
+---
+
+Last Updated: 2026-03-13
