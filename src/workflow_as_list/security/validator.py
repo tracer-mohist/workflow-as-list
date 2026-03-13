@@ -25,53 +25,49 @@ def check_encoding(content: str) -> tuple[bool, str | None]:
 
 def check_token_length(
     content: str, lower_bound: int = 282, upper_bound: int = 358
-) -> tuple[bool, int, str | None]:
-    """Check token length and provide design guidance.
+) -> tuple[bool, list[str], list[str]]:
+    """Check token length per task line.
 
-    Why: Optimal cognitive load for agent execution.
-    Note: Token count = byte count for ASCII content.
+    Why: Each task description should be 282-358 bytes (optimal cognitive load).
+    Note: Token count ~= byte count for ASCII content.
+    Reference: docs/research/theory/003-limits.md
 
     Returns:
-        (is_valid, token_count, suggestion)
+        (is_valid, errors, warnings)
 
-        is_valid: True if task can proceed (warnings allowed)
-        token_count: Byte count of content
-        suggestion: Non-empty if guidance needed
+        is_valid: True if no errors (warnings allowed)
+        errors: List of lines exceeding upper_bound
+        warnings: List of lines below lower_bound
 
-    Guidance cases:
-        - Below lower_bound: Warning (optional improvement)
-          Suggestion: Add constraints, preconditions, or outcomes
-
-        - Above upper_bound: Error (required action)
-          Suggestion: Apply Divide and Conquer strategy
+    Guidance:
+        - Line > upper_bound: Error (Divide and Conquer)
+        - Line < lower_bound: Warning (may lack context)
     """
-    token_count = len(content.encode("utf-8"))
+    lines = content.split("\n")
+    errors = []
+    warnings = []
 
-    if token_count > upper_bound:
-        return (
-            False,
-            token_count,
-            (
-                "Token count exceeds recommended maximum.\n"
-                "Why: Complex descriptions increase execution ambiguity.\n"
-                "Required: Apply Divide and Conquer strategy.\n"
-                "Pattern: One parent task + multiple focused subtasks."
-            ),
-        )
+    for i, line in enumerate(lines, 1):
+        # Skip comments and empty lines
+        stripped = line.strip()
+        if stripped.startswith("#") or not stripped:
+            continue
 
-    if token_count < lower_bound:
-        return (
-            True,
-            token_count,
-            (
-                "Token count below recommended minimum.\n"
-                "Why: Brief descriptions may lack context for reliable execution.\n"
-                "Optional: Consider adding constraints, preconditions, or outcomes.\n"
-                "Note: Ignore if task is intentionally simple."
-            ),
-        )
+        # Check line byte count
+        line_bytes = len(line.encode("utf-8"))
 
-    return True, token_count, None
+        if line_bytes > upper_bound:
+            errors.append(
+                f"Line {i}: {line_bytes} bytes exceeds {upper_bound} (Divide and Conquer)"
+            )
+        elif line_bytes < lower_bound:
+            warnings.append(
+                f"Line {i}: {line_bytes} bytes below {lower_bound} (consider adding context)"
+            )
+
+    if errors:
+        return False, errors, warnings
+    return True, [], warnings
 
 
 def check_features(content: str) -> tuple[bool, list[str]]:

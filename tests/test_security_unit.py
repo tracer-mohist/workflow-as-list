@@ -71,42 +71,41 @@ class TestCheckBlacklist:
 
 
 class TestCheckTokenLength:
-    """Layer 3: Token length check tests (design guidance)."""
+    """Layer 3: Token length check tests (per line)."""
 
-    def test_valid_length_passes(self):
-        """Scenario: Content length in valid range [282, 358].
-        Expected: Returns (True, token_count, None).
+    def test_valid_line_passes(self):
+        """Scenario: Line length in valid range [282, 358].
+        Expected: Returns (True, [], []).
         If fails: Valid workflows rejected.
         """
-        content = "x" * 300  # 300 bytes
-        passed, token_count, suggestion = check_token_length(content, 282, 358)
+        content = "- " + "x" * 300  # 302 bytes per line
+        passed, errors, warnings = check_token_length(content, 282, 358)
         assert passed is True
-        assert token_count == 300
-        assert suggestion is None
+        assert errors == []
+        assert warnings == []
 
-    def test_below_minimum_warning(self):
-        """Scenario: Content below minimum length.
-        Expected: Returns (True, token_count, suggestion) - warning but allowed.
+    def test_short_line_warning(self):
+        """Scenario: Line below minimum length.
+        Expected: Returns (True, [], [warnings]) - warning but allowed.
         If fails: Under-length workflows rejected (should be warning only).
         """
-        content = "x" * 100
-        passed, token_count, suggestion = check_token_length(content, 282, 358)
+        content = "- short line"  # 12 bytes
+        passed, errors, warnings = check_token_length(content, 282, 358)
         assert passed is True  # Warning, not error
-        assert token_count == 100
-        assert suggestion is not None
-        assert "below recommended minimum" in suggestion
+        assert errors == []
+        assert len(warnings) > 0
+        assert "below" in warnings[0]
 
-    def test_above_maximum_error(self):
-        """Scenario: Content exceeds maximum length.
-        Expected: Returns (False, token_count, suggestion) - error.
+    def test_long_line_error(self):
+        """Scenario: Line exceeds maximum length.
+        Expected: Returns (False, [errors], []) - error.
         If fails: Over-length workflows accepted.
         """
-        content = "x" * 500
-        passed, token_count, suggestion = check_token_length(content, 282, 358)
+        content = "- " + "x" * 400  # 402 bytes
+        passed, errors, warnings = check_token_length(content, 282, 358)
         assert passed is False  # Error, must decompose
-        assert token_count == 500
-        assert suggestion is not None
-        assert "Divide and Conquer" in suggestion
+        assert len(errors) > 0
+        assert "exceeds" in errors[0]
 
 
 class TestCheckFeatures:

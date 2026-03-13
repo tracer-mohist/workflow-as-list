@@ -67,16 +67,17 @@ def run_security_checks(
     if not passed:
         errors.append(f"[Layer 2] Blacklist patterns found: {matches}")
 
-    # Layer 3: Token length (design guidance)
-    passed, token_count, suggestion = check_token_length(
+    # Layer 3: Token length per line (design guidance)
+    passed, line_errors, line_warnings = check_token_length(
         content, config.token_hub_lower, config.token_hub_upper
     )
     if not passed:
-        # Above upper bound - error (required action)
-        errors.append(f"[Layer 3] {suggestion}")
-    elif suggestion:
-        # Below lower bound - warning (optional improvement)
-        warnings.append(f"[Layer 3] {suggestion}")
+        # Lines exceeding upper bound - errors
+        for err in line_errors:
+            errors.append(f"[Layer 3] {err}")
+    # Lines below lower bound - warnings
+    for warn in line_warnings:
+        warnings.append(f"[Layer 3] {warn}")
 
     # Layer 4: Feature scan
     passed, issues = check_features(content)
