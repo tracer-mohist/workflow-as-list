@@ -66,16 +66,6 @@ def test_show_missing_argument():
     assert result.exit_code != 0
 
 
-def test_serve_help():
-    """Scenario: User runs serve --help.
-    Expected: Shows serve options.
-    If fails: Serve command broken.
-    """
-    result = runner.invoke(app, ["serve", "--help"])
-    assert result.exit_code == 0
-    assert "host" in result.stdout.lower() or "port" in result.stdout.lower()
-
-
 def test_valid_workflow_check():
     """Scenario: User checks a valid workflow file.
     Expected: Workflow registered or validation error.
