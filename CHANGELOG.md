@@ -1,6 +1,77 @@
 # CHANGELOG
 
 
+## v0.2.0 (2026-03-13)
+
+### Bug Fixes
+
+- Remove test_serve_help test (serve command removed in #34)
+  ([`7b6cada`](https://github.com/tracer-mohist/workflow-as-list/commit/7b6cada3accb6bc5c5b5c88db7cb5b2ea5a4b6ca))
+
+- Delete test for removed serve command - Aligns with limited testing strategy (test only existing
+  logic)
+
+Reference: principles/automation/testing-strategy.md - Tests verify necessary conditions, not
+  sufficient conditions - Remove tests for removed functionality
+
+### Features
+
+- Add command mapping for type selection
+  ([`0a867cf`](https://github.com/tracer-mohist/workflow-as-list/commit/0a867cf9fe772cda9f7b5bfbe8025a8e3f99f8bb))
+
+- (analyze) task: Run git diff --cached --name-only - Command output as context for type selection -
+  Clear directory-to-type mapping in comments
+
+Design: - Command as functor (repository state → file list) - Output as prompt context (factual
+  basis, not memory) - Intermediate layer abstraction
+
+Why: - Prevent incorrect type selection (non-src with feat/fix) - Reduce cognitive load (show
+  changed files) - Avoid accidental version bumps - Command串 = 映射函数，输出 = 提示词
+
+Mathematical insight: - Command: Group action on repository state - Output: Orbit (changed files) -
+  Composition: Multiple commands → structured context
+
+REFERENCE: principles/communication/prompt-engineering/theory/recursive-chain.md
+
+- Add Server API POST /executions/{id}/next
+  ([#32](https://github.com/tracer-mohist/workflow-as-list/pull/32),
+  [`7ecccc5`](https://github.com/tracer-mohist/workflow-as-list/commit/7ecccc5ba346477c9d13ff9e7476ba93f845683e))
+
+- Add workflow exec command for execution management (#30, #31)
+  ([`3e1d09c`](https://github.com/tracer-mohist/workflow-as-list/commit/3e1d09c13217c759571c211d4700491b9d995a31))
+
+### Refactoring
+
+- Commit.workflow.list to correct comment format
+  ([`147abf5`](https://github.com/tracer-mohist/workflow-as-list/commit/147abf5812d079cf27dbbc0497d721f0d1951961))
+
+- Move all comments above task lines (format A) - Follow recursive-chain theory (low entropy, high
+  prediction quality) - Comments explain WHY, not WHAT - Same indent level as task
+
+Why: - Format B (comments below) breaks recursive chain - LLM token prediction needs前置 context -
+  Attention entropy lower with format A - Example sets standard for future workflows
+
+Design: - # WHY: explains design intent - # NOTE: supplementary info - Comments above task (not
+  below) - File header comments attach to first task
+
+REFERENCE: principles/communication/prompt-engineering/theory/recursive-chain.md
+
+- Remove workflow serve command ([#34](https://github.com/tracer-mohist/workflow-as-list/pull/34),
+  [`e69ce59`](https://github.com/tracer-mohist/workflow-as-list/commit/e69ce598fc1923985e4bd78c3d2b3a66b0672f24))
+
+- Delete src/workflow_as_list/cli/serve.py - Remove serve registration from cli/__init__.py - Update
+  docs/design/cli/003-commands.md
+
+Why: - Redundant with workflow server start - Lower efficiency (blocks terminal) - No unique value
+
+Users can use: - workflow server start (background mode) - uv run uvicorn
+  src.workflow_as_list.server:app (foreground debugging)
+
+- Workflow exec next shows current + next step
+  ([#30](https://github.com/tracer-mohist/workflow-as-list/pull/30),
+  [`781143b`](https://github.com/tracer-mohist/workflow-as-list/commit/781143b031fd5c60129e4ce5b2240623fd5e6878))
+
+
 ## v0.1.2 (2026-03-13)
 
 ### Bug Fixes
