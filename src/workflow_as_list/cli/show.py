@@ -1,3 +1,4 @@
+# src/workflow_as_list/cli/show.py
 """workflow show command - Show workflow definition details."""
 
 import typer

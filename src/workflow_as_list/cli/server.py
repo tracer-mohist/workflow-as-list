@@ -1,3 +1,4 @@
+# src/workflow_as_list/cli/server.py
 """workflow server command - Server lifecycle management."""
 
 import typer

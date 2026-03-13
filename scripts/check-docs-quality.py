@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# scripts/check-docs-quality.py
 """Documentation quality checker for workflow-as-list.
 
 Enforces 6-layer prompt engineering framework:

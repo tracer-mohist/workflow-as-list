@@ -1,3 +1,4 @@
+<!-- AGENTS.md -->
 # AGENTS.md - WorkflowAsList Project Guide
 
 Purpose: Project architecture and development conventions.

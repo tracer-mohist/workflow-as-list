@@ -1,3 +1,4 @@
+# .github/ISSUE_TEMPLATE/01_design_decision.yml
 name: Design Decision
 description: Record and track architectural decisions (ADR)
 title: "[DECISION]: "

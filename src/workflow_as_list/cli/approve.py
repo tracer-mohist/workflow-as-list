@@ -1,3 +1,4 @@
+# src/workflow_as_list/cli/approve.py
 """workflow approve command - Approve workflows for execution."""
 
 import typer

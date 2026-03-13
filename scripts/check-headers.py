@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # scripts/check-headers.py
 # Automate relative path header insertion for Python projects
-# NOTE: Inspired by check-headers.mjs, adapted for Python ecosystem
+# REFERENCE: check-headers.mjs (original inspiration)
 
 import os
 import sys
-from datetime import datetime
+from logging import Log
 from pathlib import Path
 
 # =============================================================================
@@ -25,12 +25,10 @@ IGNORE_LIST = {
     "__pycache__",
     ".venv",
     ".pytest_cache",
-    # workflow-as-list specific
     "examples",
     "workflow.ini",
 }
 
-# Extension to Comment Style Mapping
 RULES = {
     "//": ["js", "ts", "jsx", "tsx", "mjs", "cjs", "mts", "cts", "java", "go"],
     "#": ["py", "sh", "bash", "yaml", "yml", "dockerfile", "toml", "ini", "cfg"],
@@ -38,47 +36,6 @@ RULES = {
     "/*": ["css", "scss", "less", "rs"],
     "<!--": ["html", "xml", "vue", "svg", "md"],
 }
-
-# =============================================================================
-# LOGGING (LogLight Style)
-# =============================================================================
-
-
-class Log:
-    """Simple logging utility with LogLight-style output."""
-
-    @staticmethod
-    def _timestamp():
-        return datetime.now().strftime("%H:%M:%S")
-
-    @staticmethod
-    def sect(msg):
-        print(f"\n{Log._timestamp()}  {msg}")
-
-    @staticmethod
-    def step(msg):
-        print(f"\n{Log._timestamp()}  → {msg}")
-
-    @staticmethod
-    def work(msg):
-        print(f"{Log._timestamp()}    • {msg}")
-
-    @staticmethod
-    def find(msg):
-        print(f"{Log._timestamp()}    ✓ {msg}")
-
-    @staticmethod
-    def fail(msg):
-        print(f"{Log._timestamp()}    ✗ {msg}")
-
-    @staticmethod
-    def warn(msg):
-        print(f"{Log._timestamp()}    ⚠ {msg}")
-
-    @staticmethod
-    def end(msg):
-        print(f"\n{Log._timestamp()}  {msg}\n")
-
 
 log = Log()
 
@@ -209,8 +166,6 @@ def process_file(file_path):
 
 def main():
     """Main entry point."""
-    start_time = datetime.now()
-
     log.sect("Check Headers")
 
     # Determine targets
@@ -267,9 +222,6 @@ def main():
         log.warn(f"Skipped {stats['skipped']} files (already valid)")
     if stats["error"] > 0:
         log.fail(f"Failed {stats['error']} files")
-
-    elapsed = (datetime.now() - start_time).total_seconds()
-    log.work(f"Time taken: {elapsed:.2f}s")
 
     log.end("Check Headers")
 

@@ -1,3 +1,4 @@
+<!-- CONTRIBUTING.md -->
 # Contributing to workflow-as-list
 
 Thank you for your interest in contributing.

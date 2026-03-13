@@ -4,6 +4,29 @@
 # NOTE: Run `pre-commit install` to enable git hooks
 
 repos:
+  - repo: local
+    hooks:
+      - id: check-code-quality
+        name: Check code quality
+        entry: uv run python scripts/check-code-quality.py .
+        language: system
+        types: [python]
+        pass_filenames: false
+
+      - id: check-docs-quality
+        name: Check documentation quality
+        entry: uv run python scripts/check-docs-quality.py .
+        language: system
+        types: [markdown]
+        pass_filenames: false
+
+      - id: check-headers
+        name: Check file headers
+        entry: uv run python scripts/check-headers.py .
+        language: system
+        types: [python]
+        pass_filenames: false
+
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.15.5
     hooks:

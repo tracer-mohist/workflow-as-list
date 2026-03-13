@@ -1,3 +1,4 @@
+# src/workflow_as_list/cli/check.py
 """workflow check command - Validate and register workflow files."""
 
 from pathlib import Path

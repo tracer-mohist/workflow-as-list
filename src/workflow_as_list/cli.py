@@ -1,3 +1,4 @@
+# src/workflow_as_list/cli.py
 """CLI entry point.
 
 Re-exports app from cli package for backward compatibility.

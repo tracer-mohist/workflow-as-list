@@ -1,3 +1,4 @@
+# src/workflow_as_list/cli/__init__.py
 """CLI subcommands and main app for workflow-as-list.
 
 Subcommands are defined in separate modules for maintainability.

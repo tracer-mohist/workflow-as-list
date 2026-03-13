@@ -1,3 +1,4 @@
+# .github/workflows/release.yml
 # Release Workflow - workflow-as-list
 # Stack: python-semantic-release
 # Triggers: push to main branch (automatic releases)

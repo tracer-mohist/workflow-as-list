@@ -1,3 +1,4 @@
+# src/workflow_as_list/cli/list.py
 """workflow list command - List all registered workflows."""
 
 from rich.console import Console

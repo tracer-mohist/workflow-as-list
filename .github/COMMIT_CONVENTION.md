@@ -1,3 +1,4 @@
+<!-- .github/COMMIT_CONVENTION.md -->
 # Commit Message Convention
 
 **Standard**: Conventional Commits v1.0.0

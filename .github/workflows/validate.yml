@@ -84,7 +84,6 @@ jobs:
 
   docs:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-docs
       cancel-in-progress: true

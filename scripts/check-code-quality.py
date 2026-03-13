@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# scripts/check-code-quality.py
 """Code quality checker for workflow-as-list.
 
 Checks:

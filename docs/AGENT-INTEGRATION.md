@@ -1,3 +1,4 @@
+<!-- docs/AGENT-INTEGRATION.md -->
 # Agent Integration Guide
 
 Purpose: Guide for external LLM agents integrating with workflow-as-list.

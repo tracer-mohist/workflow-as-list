@@ -1,8 +1,9 @@
+<!-- README.md -->
 # WorkflowAsList
 
 Workflows are Just Lists.
 
-**Language**: WorkflowAsList DSL (file extension: `.workflow.list`)
+NOTE: Language is WorkflowAsList DSL (file extension: `.workflow.list`)
 
 A thinking constraint DSL for structuring LLM interactions.
 
