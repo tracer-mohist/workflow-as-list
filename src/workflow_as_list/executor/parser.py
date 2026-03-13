@@ -16,6 +16,11 @@ class WorkflowParser:
     3. (tag) content             # Tag (can modify any line type)
     4. @tag[N]: condition?       # Jump (max N times)
     5. import: path              # Import other workflow
+
+    Comment handling:
+    - Lines starting with # are comments
+    - Comments above a task line are attached to that task as metadata
+    - File header comments are attached to the first task
     """
 
     def __init__(self, content: str):
@@ -27,41 +32,62 @@ class WorkflowParser:
         self.imports: list[str] = []
 
     def parse(self) -> list[dict]:
-        """Parse workflow into steps."""
+        """Parse workflow into steps.
+
+        Comments above a task line are attached to that task as metadata.
+        """
+        pending_comments: list[str] = []
+
         for i, line in enumerate(self.lines):
-            if not line.strip():
+            stripped = line.strip()
+
+            # Skip empty lines
+            if not stripped:
                 continue
 
-            step = self._parse_line(i, line)
-            if step:
-                self.steps.append(step)
+            # Collect comment lines
+            if stripped.startswith("#"):
+                pending_comments.append(stripped)
+                continue
+
+            # Parse task line (starts with -)
+            if stripped.startswith("-"):
+                step = self._parse_line(i, line, pending_comments)
+                if step:
+                    self.steps.append(step)
+                    # Reset pending comments after attaching to task
+                    pending_comments = []
 
         return self.steps
 
-    def _parse_line(self, index: int, line: str) -> dict | None:
-        """Parse a single line into a step."""
+    def _parse_line(self, index: int, line: str, metadata: list[str]) -> dict | None:
+        """Parse a single task line into a step."""
         stripped = line.lstrip()
         indent = len(line) - len(stripped)
+
+        # Remove leading "- " from content
+        content = stripped[1:].strip() if stripped.startswith("-") else stripped
 
         step = {
             "index": len(self.steps),
             "line_number": index + 1,
-            "content": stripped,
+            "content": content,
             "indent": indent,
-            "type": self._detect_type(stripped),
+            "metadata": metadata.copy(),  # Attach pending comments
+            "type": self._detect_type(content),
         }
 
         # Extract tag if present
-        if stripped.startswith("("):
-            match = re.match(r"\(([^)]+)\)\s*(.*)", stripped)
+        if content.startswith("("):
+            match = re.match(r"\(([^)]+)\)\s*(.*)", content)
             if match:
                 step["tag"] = match.group(1)
                 step["content"] = match.group(2)
                 self.tags[step["tag"]] = step["index"]
 
         # Extract jump if present
-        if "@" in stripped:
-            match = re.match(r"@(\w+)\[(\d+)\]:\s*(.*)", stripped)
+        if "@" in content:
+            match = re.match(r"@(\w+)\[(\d+)\]:\s*(.*)", content)
             if match:
                 step["jump_target"] = match.group(1)
                 step["jump_limit"] = int(match.group(2))
@@ -69,22 +95,20 @@ class WorkflowParser:
                 self.jumps.append(step)
 
         # Extract import if present
-        if stripped.startswith("import:"):
-            path = stripped.split("import:", 1)[1].strip()
+        if content.startswith("import:"):
+            path = content.split("import:", 1)[1].strip()
             step["import_path"] = path
             self.imports.append(path)
 
         return step
 
-    def _detect_type(self, line: str) -> str:
+    def _detect_type(self, content: str) -> str:
         """Detect line type."""
-        if line.startswith("("):
+        if content.startswith("("):
             return "tagged"
-        elif line.startswith("@"):
+        elif content.startswith("@"):
             return "jump"
-        elif line.startswith("import:"):
+        elif content.startswith("import:"):
             return "import"
-        elif line.startswith(" "):
-            return "nested"
         else:
             return "content"

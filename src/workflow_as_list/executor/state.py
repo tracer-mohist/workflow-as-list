@@ -32,6 +32,10 @@ class Executor:
             self.executions_dir = EXECUTIONS_DIR
             self.outputs_dir = OUTPUTS_DIR
         else:
+            # Handle both Path and Config objects
+            if hasattr(config_dir, "config_dir"):
+                # Config object, extract path
+                config_dir = Path(config_dir.config_dir)
             self.config_dir = config_dir
             self.registry_path = config_dir / "registry.jsonl"
             self.executions_dir = config_dir / "executions"

@@ -1,19 +1,41 @@
-# Git Commit
-- (start) Status
-  - Run: git status
-- (validate) Check
-  - Check: No .env
-  - Check: No debug
-  - @validate[1]: OK?
-- (type) Type?
-  - src/ -> feat/fix
-  - tests/ -> test
-  - docs/ -> docs
-- (scope) Scope?
-- (desc) Desc?
-- (format) Output
-  - Show: <type>(<scope>)!: <desc>
-  - Ask: Use?
-  - @format[1]: OK?
-- Execute: git commit
+# Git Commit Helper
+# Purpose: Guide Conventional Commits 1.0.0 specification
+# Usage: workflow check examples/git/commit.workflow.list
+# Reference: https://www.conventionalcommits.org/en/v1.0.0/
+
+- (start) Show staged changes with git status --short and validate no sensitive files (.env, debug code) are committed
+  # WHY: Ensure clean changes before composing message
+  - Ask: Ready to commit? (yes/no, fix issues first if no)
+  - @start[1]: Ready?
+
+- (header) Compose commit message header following Conventional Commits format: type[scope]: description
+  # WHY: Header is required, type determines version bump (feat->MINOR, fix->PATCH)
+  - Ask: Type? (feat/new feature, fix/bug fix, docs/documentation, test/tests only, chore/tools, ci/CI/CD, refactor/restructure)
+  - Ask: Scope? (optional: cli/executor/security/parser/server, skip if unclear)
+  - Ask: Description? (imperative mood, lowercase start, no period, under 72 characters)
+  - Show: Complete format is:
+    <type>(<scope>): <description>
+    
+    [optional body - separate paragraph]
+    
+    [optional footer - BREAKING CHANGE: / Closes #]
+
+- (body) Ask if body is needed for complex changes that require explanation
+  # WHY: Body explains WHY not WHAT, wrap at 72 characters
+  - Ask: Need body? (yes/no, yes if change needs context or motivation)
+  - If yes: Ask: Body content? (explain motivation, alternatives considered, assumptions)
+
+- (footer) Ask if footer is needed for BREAKING CHANGE or issue links
+  # WHY: BREAKING CHANGE triggers MAJOR version, issue links close tickets
+  - Ask: Breaking API change? (yes -> add BREAKING CHANGE: <description> in footer)
+  - Ask: Issue to close? (yes -> add Closes #<number> in footer)
+
+- (confirm) Show full formatted commit message with header, body (if any), and footer (if any), ask for final confirmation
+  # WHY: Final review before irreversible action
+  # NOTE: Full format has header, blank line, body (optional), blank line, footer (optional)
+  - Ask: Confirm and execute git commit? (yes/no)
+  - @confirm[1]: Confirmed?
+  - Execute: git commit -m "<full message>"
+  - Show: Commit hash with git rev-parse --short HEAD
+
 - End
