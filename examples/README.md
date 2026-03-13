@@ -1,82 +1,138 @@
-# WorkflowAsList Examples
+# Examples - WorkflowAsList DSL Examples
 
-Real-world workflow examples.
+Purpose: Demonstrate DSL patterns and provide reusable templates.
+
+Not here: Project-specific workflows → `workflow/` (self-hosted)
 
 ---
 
-## Structure
+## Design Philosophy
 
-```dir.info
+### 1. Naming Convention
+
+Format: `<domain>/<action>.workflow.list`
+
+Examples:
+- `github/issue/create.workflow.list` — Create GitHub issue
+- `git/commit.workflow.list` — Conventional Commits
+- `general/code/review.workflow.list` — Code review process
+
+Why:
+- Directory as namespace (clear semantics)
+- Verb-first for actions (intent clarity)
+- Scalable nesting (sub-domains natural)
+
+REFERENCE: memory/2026-03-13.md (naming discussion)
+
+---
+
+### 2. Layer Separation
+
+Three layers:
+
+Layer 0: CLI/Server (executor)
+  ↓
+Layer 1: `workflow/*.workflow.list` (self-hosted, project-specific)
+  ↓
+Layer 2: `examples/*.workflow.list` (general templates, for others)
+
+Why:
+- Examples are stable (reference templates)
+- Workflow/ evolves fast (real usage)
+- Prevents mixing concerns
+
+---
+
+### 3. Bootstrap Principle
+
+From memory/2026-03-13.md:
+
+> If we want others to trust our rules, we must use them ourselves.
+
+Self-hosting strategy:
+1. Use workflow-as-list to develop workflow-as-list
+2. Extract patterns from `workflow/` to `examples/`
+3. Validate DSL expressiveness in real scenarios
+
+Why:
+- Trust comes from usage, not design
+- Real scenarios expose abstraction leaks
+- Honest practice (we eat our own dogfood)
+
+---
+
+### 4. Progressive Design
+
+Workflow design process:
+
+Phase 1: Record — Document successful operations
+Phase 2: Abstract — Extract common patterns
+Phase 3: Formalize — Write as `.workflow.list`
+Phase 4: Validate — Use it, find issues, iterate
+
+Why:
+- Workflows grow from practice, not speculation
+- Allows failure (discard bad designs)
+- Emergent complexity (simple rules → rich behavior)
+
+---
+
+## Directory Structure
+
+```
 examples/
-├── git/commit.workflow.list    # Git commit helper
-├── ci-cd/                      # CI/CD workflows (TBD)
-└── research/                   # Research workflows (TBD)
+├── git/                     # Git operations (universal)
+│   └── commit.workflow.list    # Conventional Commits guide
+│
+├── github/                  # GitHub operations
+│   └── issue/
+│       ├── create.workflow.list
+│       └── close.workflow.list
+│
+├── general/                 # Cross-platform workflows
+│   └── code/
+│       ├── review.workflow.list
+│       └── format.workflow.list
+│
+└── README.md                # This file (design philosophy)
 ```
-
-Format: `examples/[domain]/[use-case].workflow.list`
 
 ---
 
-## File Header Style
+## Usage
 
-Each workflow file includes a header comment:
+### Run an example
 
-```
-# =============================================================================
-# Workflow: <Name>
-# =============================================================================
-#
-# Purpose: What problem this solves
-# Usage: How to run (check, approve, run)
-# Preconditions: What must be true before running
-# Postconditions: What is guaranteed after running
-#
-# =============================================================================
+```bash
+workflow check examples/git/commit.workflow.list
+workflow run examples/git/commit.workflow.list
 ```
 
-This follows:
-- Traditional script headers (self-documenting)
-- Design by Contract (Bertand Meyer) - clear pre/post conditions
-- Workflow files are self-contained
+### Adapt for your project
+
+1. Copy to your project
+2. Modify domain-specific rules
+3. Test and iterate
 
 ---
 
-## Comment Style
+## Contributing
 
-Comments explain **why**, not **what**:
+When adding new examples:
 
-```
-# Good: explains why
-- @validate[1]  # Prevent infinite loops on validation failure
-
-# Bad: explains what (obvious from code)
-- @validate[1]  # Jump back to validate tag max 1 time
-```
-
-If code needs long comments, refactor the code instead.
-
-This follows Unix philosophy:
-- Code should be self-explanatory
-- Comments document intent, not mechanics
-- Complexity should be refactored, not documented
+1. Follow naming convention (`<domain>/<action>.workflow.list`)
+2. Keep it general (avoid project-specific assumptions)
+3. Add comments explaining WHY (not just WHAT)
+4. Test with `workflow check <file>`
 
 ---
 
-## Guidelines
+## Related Files
 
-Examples must:
-- Solve real problems (not toy examples)
-- Show DSL features in action
-- Include clear comments (why, not what)
-- Pass `workflow check`
+- `workflow/` — Self-hosted workflows (project-specific)
+- `docs/` — DSL concepts and principles
+- `SYNTAX.md` — Language specification
 
 ---
 
-## Related
-
-- `SYNTAX.md` - DSL syntax (5 rules)
-- `README.md` - Project overview
-
----
-
-Last Updated: 2026-03-12
+Last Updated: 2026-03-13 (bootstrap design discussion)
