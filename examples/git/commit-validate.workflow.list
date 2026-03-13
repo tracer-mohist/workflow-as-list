@@ -1,0 +1,8 @@
+# Workflow: Commit Validation
+# Purpose: Validate staged changes
+
+- (validate) Check Changes
+  - Run: git status --short
+  - Check: No .env files
+  - Check: No debug code
+  - @validate[1]: Clean?

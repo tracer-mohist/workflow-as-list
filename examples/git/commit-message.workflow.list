@@ -1,0 +1,8 @@
+# Workflow: Commit Message
+# Purpose: Compose Conventional Commit
+
+- (compose) Message
+  - Ask: Type (feat/fix/docs/refactor/test/chore)
+  - Ask: Scope (optional)
+  - Ask: Description (<72 chars)
+  - @compose[2]: Valid?
