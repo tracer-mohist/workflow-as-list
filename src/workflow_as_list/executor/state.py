@@ -134,10 +134,25 @@ class Executor:
             json.dump(execution.model_dump(mode="json"), f, indent=2)
 
     def get_execution(self, execution_id: str) -> Execution | None:
-        """Load execution from file."""
+        """Load execution from file.
+
+        Checks both new path (~/.workflow-as-list/state/executions/)
+        and legacy path (~/.workflow-as-list/executions/) for backward compatibility.
+        """
+        # Try new path first
         path = self.executions_dir / f"{execution_id}.json"
         if not path.exists():
-            return None
+            # Try legacy path for backward compatibility
+            legacy_path = (
+                Path.home()
+                / ".workflow-as-list"
+                / "executions"
+                / f"{execution_id}.json"
+            )
+            if legacy_path.exists():
+                path = legacy_path
+            else:
+                return None
 
         with open(path) as f:
             data = json.load(f)
