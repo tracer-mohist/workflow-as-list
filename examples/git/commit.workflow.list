@@ -3,16 +3,23 @@
 # Usage: workflow check examples/git/commit.workflow.list
 # Reference: https://www.conventionalcommits.org/en/v1.0.0/
 
-# WHY: Show staged changes and validate before composing message
+# WHY: Show actual changed files for informed type selection
+# NOTE: Command output provides factual basis, not memory-based judgment
+- (analyze) Analyze changed files with git diff --cached --name-only
+  - Run: git diff --cached --name-only
+  - Show: Changed files list (use for type selection below)
+
+# WHY: Ensure clean changes before composing message
 # NOTE: Check for .env files and debug statements (common mistakes)
-- (start) Show staged changes with git status --short and validate no sensitive files are committed
+- (start) Validate no sensitive files are committed
   - Ask: Ready to commit? (yes/no, fix issues first if no)
   - @start[1]: Ready?
 
 # WHY: Header is required per spec, type determines version bump (feat->MINOR, fix->PATCH)
-# NOTE: Type selection based on directory and change type
+# NOTE: Only src/ changes should use feat/fix (triggers version), others use chore/docs/test
+# REFERENCE: .github/COMMIT_CONVENTION.md (src/=feat/fix, tests/=test, docs/=docs, .github/=ci, scripts/=chore)
 - (header) Compose commit message header following Conventional Commits format: type[scope]: description
-  - Ask: Type? (feat/new feature, fix/bug fix, docs/documentation, test/tests only, chore/tools, ci/CI/CD, refactor/restructure)
+  - Ask: Type based on changed directory? (src/+feature->feat, src/+fix->fix, tests/->test, docs/->docs, .github/->ci, scripts/->chore, refactor->refactor)
   - Ask: Scope? (optional: cli/executor/security/parser/server, skip if unclear)
   - Ask: Description? (imperative mood, lowercase start, no period, under 72 characters)
   - Show: Complete format is:
