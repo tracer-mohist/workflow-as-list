@@ -82,9 +82,9 @@ REFERENCE: `docs/design/security/005-layers.md`
 ## State Management
 
 Files (Single Source of Truth):
-- `~/.config/wf/registry.jsonl` — Workflow registry
-- `~/.config/wf/executions/` — Execution instances
-- `~/.config/wf/outputs/` — Step outputs
+- `~/.workflow-as-list/registry.jsonl` — Workflow registry
+- `~/.workflow-as-list/executions/` — Execution instances
+- `~/.workflow-as-list/outputs/` — Step outputs
 
 CLI and Server Share State:
 - Both use same files
