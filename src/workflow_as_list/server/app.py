@@ -19,6 +19,8 @@ class StepAdvance(BaseModel):
 
 def create_app() -> FastAPI:
     """Create FastAPI application."""
+    from datetime import UTC, datetime
+
     app = FastAPI(
         title="WorkflowAsList API",
         description="HTTP API for workflow management",
@@ -28,6 +30,15 @@ def create_app() -> FastAPI:
     # Initialize executor
     ensure_directories()
     executor = Executor()
+
+    @app.get("/health", tags=["health"])
+    def health_check():
+        """Health check endpoint."""
+        return {
+            "status": "healthy",
+            "timestamp": datetime.now(UTC).isoformat(),
+            "version": "0.1.1",
+        }
 
     @app.get("/workflows", tags=["workflows"])
     def list_workflows():
