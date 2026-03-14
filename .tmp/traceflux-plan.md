@@ -27,8 +27,10 @@ Use workflow-as-list to manage traceflux development, creating feedback loop.
 - [x] `traceflux/workflow/commit.workflow.list` (remote import test)
   - URL: `https://raw.githubusercontent.com/tracer-mohist/workflow-as-list/refs/heads/main/examples/git/commit.workflow.list`
 - [x] `traceflux/workflow/decision-capture.workflow.list` (adapted)
-- [ ] `traceflux/scripts/check-code-quality.py` (adapt for traceflux) [NEXT]
-- [ ] `traceflux/scripts/check-docs-quality.py` (adapt for traceflux) [NEXT]
+  - URL: `https://raw.githubusercontent.com/tracer-mohist/workflow-as-list/refs/heads/main/examples/decision/route.workflow.list`
+- [x] Remote import tested and pushed
+
+NOTE: Both workflows now use `import:` with HTTPS URLs (DSL feature validation)
 
 ---
 
