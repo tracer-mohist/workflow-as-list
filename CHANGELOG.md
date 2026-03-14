@@ -1,5 +1,18 @@
-<!-- CHANGELOG.md -->
 # CHANGELOG
+
+
+## v0.5.6 (2026-03-14)
+
+### Bug Fixes
+
+- Hash-only cache naming (security fix)
+  ([#40](https://github.com/tracer-mohist/workflow-as-list/pull/40),
+  [`9d95d13`](https://github.com/tracer-mohist/workflow-as-list/commit/9d95d13d45903de7354f8a29e0711529661b2ca3))
+
+- Remove original filename (prevent injection) - Format: .imports/<hash>.workflow.list - Tested:
+  local + remote imports
+
+REFERENCE: #40
 
 
 ## v0.5.5 (2026-03-14)
