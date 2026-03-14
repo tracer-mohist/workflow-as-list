@@ -4,6 +4,7 @@
 - (start) Test Remote Import
   # you see: <project root:.imports/61726152b038af77.workflow.list> <sha256:61726152b038af779e07b68db164187111b6d02a6427db25c03fd987f4ac0c30>
   # you see: <project root:.imports/61726152b038af77.workflow.list> <sha256:61726152b038af779e07b68db164187111b6d02a6427db25c03fd987f4ac0c30>
+  # you see: <project root:.imports/61726152b038af77.workflow.list> <sha256:61726152b038af779e07b68db164187111b6d02a6427db25c03fd987f4ac0c30>
   import: https://raw.githubusercontent.com/tracer-mohist/workflow-as-list/refs/heads/main/examples/git/commit.workflow.list
 
 - End

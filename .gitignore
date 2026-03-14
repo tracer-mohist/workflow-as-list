@@ -59,3 +59,7 @@ Thumbs.db
 .imports/
 .workflow-as-list/
 
+
+# workflow-as-list cache
+.imports/
+.workflow-as-list/

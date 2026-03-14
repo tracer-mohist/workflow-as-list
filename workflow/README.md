@@ -1,17 +1,9 @@
-<!-- workflow/README.md -->
 # Project Workflows
 
-Workflows in this directory manage workflow-as-list development.
+Workflows manage workflow-as-list development.
 
-**Usage:**
-```bash
-workflow check workflow/<name>
-workflow run workflow/<name>
-```
+Usage:
+  workflow check workflow/<name>
+  workflow run workflow/<name>
 
-**Import caching:**
-- Automatic on first execution
-- Cache location: `.imports/`
-- Verification: SHA-256 hash
-
-See: workflow-as-list documentation
+NOTE: Import caching is automatic (see .imports/)
