@@ -1,3 +1,4 @@
+<!-- .tmp/traceflux-plan.md -->
 # Traceflux Bootstrap Plan
 
 **Status**: Temporary (delete after completion)

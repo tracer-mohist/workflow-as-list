@@ -50,3 +50,12 @@ Thumbs.db
 # Local overrides (allowed)
 .env.local
 ~/
+
+# workflow-as-list cache
+.imports/
+.workflow-as-list/
+
+# workflow-as-list cache
+.imports/
+.workflow-as-list/
+

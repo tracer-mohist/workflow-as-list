@@ -129,3 +129,26 @@ Test files:
 
 Last Updated: 2026-03-12
 Maintainer: Tracer (迹)
+
+## Workflow Automation
+
+This project uses workflow-as-list for process automation.
+
+NOTE: For `.workflow.list` files:
+- Documentation: `workflow --help`
+- Execute: `workflow check/run/exec <workflow-name>`
+- Import caching: Automatic (`.imports/`)
+
+Available workflows:
+```bash
+workflow list
+```
+
+Quick start:
+```bash
+workflow check <name>   # Validate
+workflow run <name>     # Execute
+workflow exec read <id> # Read step
+workflow exec next <id> # Advance
+```
+

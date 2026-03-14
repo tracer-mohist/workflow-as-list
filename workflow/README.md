@@ -1,47 +1,17 @@
-# Self-Hosted Workflows
+<!-- workflow/README.md -->
+# Project Workflows
 
-Purpose: Use workflow-as-list to develop workflow-as-list.
+Workflows in this directory manage workflow-as-list development.
 
-Not here: Generic templates → `examples/`
-
----
-
-## Mapping
-
-Format: `workflow/<name>.workflow.list`
-
-- `<name>`: Workflow identifier (single segment)
-
-Rule: Flat structure, routed by `main.workflow.list` (TODO).
-
----
-
-## Constraints
-
-1. **Project-Specific** — Binds to workflow-as-list
-2. **Evolving** — Changes with project needs
-3. **Validated** — Must be used in real work
-
----
-
-## Usage
-
+**Usage:**
 ```bash
 workflow check workflow/<name>
-workflow approve <name>
-workflow run <name>
+workflow run workflow/<name>
 ```
 
-Query structure: `ls workflow/`
+**Import caching:**
+- Automatic on first execution
+- Cache location: `.imports/`
+- Verification: SHA-256 hash
 
----
-
-## Philosophy
-
-If we want others to trust our rules, we must use them ourselves.
-
-See: `examples/README.md` (template extraction)
-
----
-
-Last Updated: 2026-03-13
+See: workflow-as-list documentation
