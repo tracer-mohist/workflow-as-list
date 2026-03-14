@@ -1,5 +1,17 @@
-<!-- CHANGELOG.md -->
 # CHANGELOG
+
+
+## v0.5.4 (2026-03-14)
+
+### Bug Fixes
+
+- Hash-based cache naming + project root annotation
+  ([#40](https://github.com/tracer-mohist/workflow-as-list/pull/40),
+  [`94bf511`](https://github.com/tracer-mohist/workflow-as-list/commit/94bf5117926b670b07d95502d9cddb37cf5fbf62))
+
+- Flat cache: .imports/<hash>-<filename> - Annotation: '(project root)' to avoid ambiguity
+
+REFERENCE: #40
 
 
 ## v0.5.3 (2026-03-14)
