@@ -5,7 +5,7 @@
 
 - (start) Test Import Workflow
   # Import base workflow for common steps
-# you see: <.imports/workflow/test-import.workflow.list> <sha256:f67debb9e7b8d86bdfaa071c6c22a15b85a69f720fb1c55de2dde1ac838b2505>
+  # you see: <.imports/workflow/test-import.workflow.list> <sha256:f67debb9e7b8d86bdfaa071c6c22a15b85a69f720fb1c55de2dde1ac838b2505>
   import: ./main.workflow.list
 
 - (test) Local test step
