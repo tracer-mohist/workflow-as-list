@@ -1,5 +1,30 @@
-<!-- CHANGELOG.md -->
 # CHANGELOG
+
+
+## v0.7.0 (2026-03-14)
+
+### Chores
+
+- Remove test workflow files ([#40](https://github.com/tracer-mohist/workflow-as-list/pull/40),
+  [`e9398b7`](https://github.com/tracer-mohist/workflow-as-list/commit/e9398b761e7221a0db71389917e6220616ba1995))
+
+- Removed workflow/test-local-import.workflow.list - Removed
+  workflow/test-remote-import.workflow.list - Removed .imports/ cache directory
+
+Test files served their purpose during #40 implementation. Cache is regenerated on-demand when
+  imports are used.
+
+REFERENCE: #40 (Import caching mechanism - completed)
+
+### Features
+
+- Prohibit pure-import files ([#41](https://github.com/tracer-mohist/workflow-as-list/pull/41),
+  [`08e0b78`](https://github.com/tracer-mohist/workflow-as-list/commit/08e0b783b4383877f241c89efbd32ebac67b1a57))
+
+- Added validate_no_pure_import() to WorkflowParser - Updated cli/check.py with validation - Updated
+  SYNTAX.md documentation
+
+REFERENCE: #41
 
 
 ## v0.6.2 (2026-03-14)
