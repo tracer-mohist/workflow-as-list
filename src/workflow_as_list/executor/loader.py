@@ -50,19 +50,25 @@ class WorkflowLoader:
         return expanded
 
     def _add_annotations_to_source(self, workflow_path: Path, content: str) -> None:
-        """Add cache annotations to source file for each import."""
+        """Add cache annotations to source file for each import.
+
+        Only adds annotation if it doesn't already exist in the source file.
+        """
         lines = content.split("\n")
         output = []
-        added_annotations = {}  # import_path -> annotation
 
-        for line in lines:
+        for i, line in enumerate(lines):
             stripped = line.strip()
 
             if stripped.startswith("import:"):
-                import_path = stripped.split("import:", 1)[1].strip()
+                # Check if previous line is already an annotation for this import
+                has_annotation = False
+                if i > 0 and "# you see:" in lines[i - 1]:
+                    has_annotation = True
 
-                # Check if annotation already exists
-                if import_path not in added_annotations:
+                if not has_annotation:
+                    import_path = stripped.split("import:", 1)[1].strip()
+
                     # Fetch and cache this import
                     imported_content = self._fetch_import(
                         import_path, workflow_path.parent
@@ -85,10 +91,7 @@ class WorkflowLoader:
                         " " * indent
                         + f"# you see: <project root:{rel_cache_path}> <{hash_value}>"
                     )
-                    added_annotations[import_path] = annotation
-
-                # Add annotation before import line
-                output.append(added_annotations[import_path])
+                    output.append(annotation)
 
             output.append(line)
 
