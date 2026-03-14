@@ -1,5 +1,40 @@
-<!-- CHANGELOG.md -->
 # CHANGELOG
+
+
+## v0.5.0 (2026-03-14)
+
+### Documentation
+
+- Update traceflux-plan.md Phase 2 status
+  ([`f65c441`](https://github.com/tracer-mohist/workflow-as-list/commit/f65c44172cebc98d559358565bcffd2bdc4f5562))
+
+- Marked remote import workflows as complete - Added note about DSL import: feature validation
+
+### Features
+
+- Add import caching mechanism with loader
+  ([#40](https://github.com/tracer-mohist/workflow-as-list/pull/40),
+  [`68dbc75`](https://github.com/tracer-mohist/workflow-as-list/commit/68dbc759066b68b07883dfc2e9300fe074afcc32))
+
+- New module: src/workflow_as_list/executor/loader.py - WorkflowLoader class with import expansion -
+  Cache to .imports/ directory (auto-gitignore) - Add # you see: <path> <sha256:hash> annotation -
+  Hash verification for cache invalidation - Updated show.py: --expanded flag shows inlined imports
+  - Updated check.py: --expanded flag validates expanded content - Test workflow:
+  workflow/test-import.workflow.list
+
+NOTE: 239 lines (under 256 limit)
+
+REFERENCE: #40 (Import caching mechanism)
+
+- Add workflow init command for project onboarding
+  ([#42](https://github.com/tracer-mohist/workflow-as-list/pull/42),
+  [`53493b8`](https://github.com/tracer-mohist/workflow-as-list/commit/53493b8d403d284423e0551f73811d3ad16f2f09))
+
+- New command: workflow init - Detects AGENTS.md/README.md/CONTRIBUTING.md - Adds workflow-as-list
+  documentation - Creates .workflow-as-list/config.ini - Updates .gitignore - Creates
+  workflow/README.md - Options: --docs-only, --config-only, --force
+
+NOTE: 217 lines (under 256 limit)
 
 
 ## v0.4.0 (2026-03-14)
@@ -118,6 +153,9 @@ Closes: #25, #29
 Why: - Examples need clear guidance for users - Design decisions should be documented - Future
   contributors need context
 
+- **workflow**: Add decision-capture workflow (Issue vs Docs routing)
+  ([`a7d7400`](https://github.com/tracer-mohist/workflow-as-list/commit/a7d7400245431bc891be0db54f5adbef4dc9fb0a))
+
 - **workflow**: Add README.md explaining self-hosted workflows
   ([`315b09a`](https://github.com/tracer-mohist/workflow-as-list/commit/315b09a637a6873ca35bcf33d158e04e12565e1f))
 
@@ -135,29 +173,10 @@ Why: - workflow/ needs clear documentation - Distinguish from examples/ (self vs
 
 Why: - Less maintenance burden - Core message stays relevant longer
 
-### Features
-
-- **workflow**: Add decision-capture workflow (Issue vs Docs routing)
-  ([`73e4b60`](https://github.com/tracer-mohist/workflow-as-list/commit/73e4b607c3ac82f54984d5304027a0633e0420c1))
-
-Philosophy: - Issue = Temporary decisions (short lifetime, project-specific) - Docs = Permanent
-  rules (long lifetime, general principles)
-
-Contract: - Pre: Have information/decision to record - Post: Information stored in appropriate place
-  - Invariant: No decision lost, no docs polluted with tmp
-
-Workflow: 1. Classify by lifetime and scope 2. Route to Issue (temporary) or Docs (permanent) 3.
-  Cross-reference for traceability 4. Verify recording is complete
-
-Why: - Temporary decisions need structured tracking (issues) - Permanent rules need stable storage
-  (docs) - Prevents docs clutter and decision loss
-
-Part of: Traceflux bootstrap plan (.tmp/traceflux-plan.md)
-
 ### Refactoring
 
 - Move decision-capture to examples/decision/route (generic template)
-  ([`05c348c`](https://github.com/tracer-mohist/workflow-as-list/commit/05c348c7c05fc846968ddf7f3258d4f3792379a7))
+  ([`b852c96`](https://github.com/tracer-mohist/workflow-as-list/commit/b852c96ea1dfd1f476411aba316800dd4abe7db8))
 
 - Moved from workflow/ to examples/decision/route.workflow.list - Updated to be project-agnostic
   (removes workflow-as-list specific assumptions) - Enables reuse across projects via import: URL
