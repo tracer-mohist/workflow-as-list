@@ -14,20 +14,21 @@ Use workflow-as-list to manage traceflux development, creating feedback loop.
 
 ## Phase 1: workflow-as-list Foundation
 
-- [ ] Create Issue: "decision-capture workflow" proposal
-- [ ] Create `workflow/decision-capture.workflow.list`
+- [x] Create Issue: "decision-capture workflow" proposal (#39)
+- [x] Create `workflow/decision-capture.workflow.list`
 - [ ] Test: Process one real decision
 
 ---
 
-## Phase 2: traceflux Setup
+## Phase 2: traceflux Setup [COMPLETE]
 
-- [ ] `traceflux/workflow/README.md` (self-hosting purpose)
-- [ ] `traceflux/.github/ISSUE_TEMPLATE/decision.yml` (temporary decisions)
-- [ ] `traceflux/workflow/commit.workflow.list` (remote import test)
+- [x] `traceflux/workflow/README.md` (self-hosting purpose)
+- [x] `traceflux/.github/ISSUE_TEMPLATE/decision.yml` (temporary decisions)
+- [x] `traceflux/workflow/commit.workflow.list` (remote import test)
   - URL: `https://raw.githubusercontent.com/tracer-mohist/workflow-as-list/refs/heads/main/examples/git/commit.workflow.list`
-- [ ] `traceflux/scripts/check-code-quality.py` (adapt for traceflux)
-- [ ] `traceflux/scripts/check-docs-quality.py` (adapt for traceflux)
+- [x] `traceflux/workflow/decision-capture.workflow.list` (adapted)
+- [ ] `traceflux/scripts/check-code-quality.py` (adapt for traceflux) [NEXT]
+- [ ] `traceflux/scripts/check-docs-quality.py` (adapt for traceflux) [NEXT]
 
 ---
 

@@ -1,15 +1,19 @@
-# decision-capture.workflow.list
-# Purpose: Route information to correct destination (Issue vs Docs)
+# route.workflow.list
+# Purpose: Route decisions to correct destination (Issue vs Docs)
 #
 # Contract:
 #   Pre:  Have information/decision to record
 #   Post: Information stored in appropriate place
-#   Invariant: No decision lost, no docs polluted with tmp
+#   Invariant: No decision lost, no docs polluted with temporary content
 #
 # Philosophy:
 #   Issue = Temporary decisions (short lifetime, project-specific)
 #   Docs = Permanent rules (long lifetime, general principles)
-#   Arrow: -> (ASCII, not unicode)
+#
+# Customization:
+#   - Adjust classification questions for your context
+#   - Replace issue template paths with your templates
+#   - Modify doc targets for your documentation structure
 
 # WHY: Temporary decisions clutter docs, permanent ideas need docs not issues
 - (classify) Determine destination based on lifetime and scope
@@ -20,19 +24,19 @@
 
 # WHY: Issues have structure for decision tracking (labels, assignees, discussions)
 - (create-issue) If temporary decision:
-  - Show: Available issue templates
-  - Ask: Use decision.yml template? (yes/no)
-  - If yes: Open GitHub issue with decision template
-  - Fields: Title, Decision context, Options considered, Rationale
+  - Show: Available issue templates in your project
+  - Ask: Use decision template? (yes/no)
+  - If yes: Open issue with decision template
+  - Fields: Title, Context, Options considered, Rationale
   - Tags: decision, tmp
   - Assign: Decision owner (optional)
   - Link: Related files/code (if any)
 
 # WHY: Docs are for timeless rules (functors, not instances)
 - (update-docs) If permanent rule:
-  - Ask: Which doc needs update? (README, docs/, workflow/)
+  - Ask: Which doc needs update? (README, docs/, or other)
   - Ask: What section? (or create new)
-  - Format: Follow prompt-engineering principles
+  - Format: Follow your documentation standards
   - Commit: "docs: <decision summary>"
   - Push: Create PR if needed
 
