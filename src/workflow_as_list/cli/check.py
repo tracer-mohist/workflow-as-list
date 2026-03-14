@@ -60,6 +60,14 @@ def check(
     parser = WorkflowParser(content)
     steps = parser.parse()
 
+    # Validate no pure-import files (#41)
+    is_valid, validation_errors = parser.validate_no_pure_import()
+    if not is_valid:
+        print_output(OutputType.ERROR, "DSL validation failed:")
+        for error in validation_errors:
+            console.print(f"  - {error}")
+        raise typer.Exit(2)
+
     # Register
     workflow = executor.register_workflow(
         name=file.stem,

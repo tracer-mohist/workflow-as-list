@@ -112,3 +112,37 @@ class WorkflowParser:
             return "import"
         else:
             return "content"
+
+    def validate_no_pure_import(self) -> tuple[bool, list[str]]:
+        """Validate that workflow is not a pure-import file.
+
+        Rules:
+        1. File must have at least one non-import step
+        2. Import cannot be the first non-comment line (ignition required)
+
+        Returns:
+            Tuple of (is_valid, error_messages)
+        """
+        errors = []
+
+        # Check if file has any non-import steps
+        non_import_steps = [s for s in self.steps if s["type"] != "import"]
+        if not non_import_steps:
+            errors.append(
+                "Pure import file not allowed. "
+                "Add local steps before or after import. "
+                "Example: - (start) Workflow Name\\n    import: ./base.workflow.list"
+            )
+            return False, errors
+
+        # Check if import is the first line (before any local step)
+        first_step = self.steps[0] if self.steps else None
+        if first_step and first_step["type"] == "import":
+            errors.append(
+                "Import cannot be the first line. "
+                "Add ignition step before import. "
+                "Example: - (start) Workflow Name\\n    import: ./base.workflow.list"
+            )
+            return False, errors
+
+        return True, errors

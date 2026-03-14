@@ -48,6 +48,46 @@ REFERENCE: See `README.md` for quick reference and examples.
 
 ---
 
+## Constraints
+
+### No Pure Import Files (#41)
+
+**Rule**: A workflow file MUST have at least one local step.
+
+**Invalid**:
+```
+# ❌ Pure import (no local steps)
+import: ./base.workflow.list
+```
+
+**Invalid**:
+```
+# ❌ Import as first line (no ignition)
+import: ./base.workflow.list
+
+- (local) My step
+```
+
+**Valid**:
+```
+# ✅ Local step before import (ignition)
+- (start) Workflow Name
+  import: ./base.workflow.list
+
+# ✅ Local step after import
+- (analyze) Analyze files
+  import: ./common/analyze.workflow.list
+```
+
+**Rationale**:
+- Import should be a dependency, not a replacement
+- Local steps provide execution context ("ignition")
+- User psychology: "This is workflow" not "This is meta"
+
+REFERENCE: See #41 for design discussion.
+
+---
+
 ## Detailed Syntax
 
 ### 1. List Item
