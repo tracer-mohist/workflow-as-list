@@ -1,7 +1,7 @@
 # pyproject.toml
 [project]
 name = "workflow-as-list"
-version = "0.6.0"
+version = "0.6.1"
 description = "A thinking constraint DSL for structuring LLM interactions"
 requires-python = ">=3.12"
 dependencies = [

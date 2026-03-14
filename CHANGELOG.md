@@ -1,6 +1,24 @@
 # CHANGELOG
 
 
+## v0.6.1 (2026-03-14)
+
+### Bug Fixes
+
+- Prevent duplicate annotation on repeated runs
+  ([#40](https://github.com/tracer-mohist/workflow-as-list/pull/40),
+  [`2a1fbf0`](https://github.com/tracer-mohist/workflow-as-list/commit/2a1fbf00bc89d466972bbe6e5c82ab63ae8e36af))
+
+- Check if previous line already has '# you see:' annotation - Only add annotation if not already
+  present - Tested: multiple runs don't create duplicates
+
+Bug: Running 'workflow check --expanded' multiple times added duplicate annotations
+
+Fix: Check source file for existing annotation before adding
+
+REFERENCE: #40 (Import caching mechanism)
+
+
 ## v0.6.0 (2026-03-14)
 
 ### Documentation
