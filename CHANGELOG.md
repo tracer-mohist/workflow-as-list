@@ -1,5 +1,17 @@
-<!-- CHANGELOG.md -->
 # CHANGELOG
+
+
+## v0.5.2 (2026-03-14)
+
+### Bug Fixes
+
+- Cache annotation indentation matches import line
+  ([`b021645`](https://github.com/tracer-mohist/workflow-as-list/commit/b021645e39ebc3c80087a04e3f52f560c3c9c9ac))
+
+- Annotation inherits import line indentation - Format: ' # you see: <path> <hash>' (with leading
+  spaces)
+
+REFERENCE: #40
 
 
 ## v0.5.1 (2026-03-14)
