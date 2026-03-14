@@ -73,18 +73,26 @@ class WorkflowLoader:
     def _add_annotation_to_content(
         self, content: str, workflow_path: Path, cache_path: Path, hash_value: str
     ) -> str:
-        """Add cache annotation to workflow content."""
+        """Add cache annotation BEFORE import line (not after)."""
         lines = content.split("\n")
         output = []
+        added = set()  # Track which imports have annotations
 
         for i, line in enumerate(lines):
-            output.append(line)
-            # Add annotation after import lines
+            # Check if this is an import line without annotation
             if line.strip().startswith("import:"):
-                annotation = f"# you see: {cache_path} <{hash_value}>"
                 # Check if next line is already an annotation
-                if i + 1 < len(lines) and "# you see:" not in lines[i + 1]:
+                has_annotation = False
+                if i + 1 < len(lines) and "# you see:" in lines[i + 1]:
+                    has_annotation = True
+
+                if not has_annotation and str(workflow_path) not in added:
+                    # Add annotation BEFORE import line
+                    annotation = f"# you see: <{cache_path}> <{hash_value}>"
                     output.append(annotation)
+                    added.add(str(workflow_path))
+
+            output.append(line)
 
         return "\n".join(output)
 
