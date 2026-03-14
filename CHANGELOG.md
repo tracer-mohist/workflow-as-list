@@ -1,6 +1,20 @@
 # CHANGELOG
 
 
+## v0.5.3 (2026-03-14)
+
+### Bug Fixes
+
+- Per-import caching with correct annotations
+  ([#40](https://github.com/tracer-mohist/workflow-as-list/pull/40),
+  [`73ea7d1`](https://github.com/tracer-mohist/workflow-as-list/commit/73ea7d180d059620b51c36782e3b7152ac61e7ea))
+
+- Each import cached independently - Annotation points to import's cache - Works for local and
+  remote imports
+
+REFERENCE: #40
+
+
 ## v0.5.2 (2026-03-14)
 
 ### Bug Fixes
