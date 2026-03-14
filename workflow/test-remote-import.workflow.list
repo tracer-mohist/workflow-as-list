@@ -1,0 +1,16 @@
+# test-remote-import.workflow.list
+# Purpose: Test remote URL import caching
+#
+# This workflow tests remote import expansion.
+
+- (start) Test Remote Import
+  # Import from remote URL
+  # you see: <.imports/raw.githubusercontent.com/tracer-mohist/workflow-as-list/refs/heads/main/examples/git/commit.workflow.list> <sha256:61726152b038af779e07b68db164187111b6d02a6427db25c03fd987f4ac0c30>
+  import: https://raw.githubusercontent.com/tracer-mohist/workflow-as-list/refs/heads/main/examples/git/commit.workflow.list
+
+- (test) Verify import
+  - Ask: Remote import cached? (yes/no)
+  - If yes: Print "SUCCESS"
+  - If no: Print "FAILED"
+
+- End

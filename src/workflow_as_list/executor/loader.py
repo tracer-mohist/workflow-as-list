@@ -1,13 +1,13 @@
 # src/workflow_as_list/executor/loader.py
-"""Workflow loader - expands imports with caching.
+"""Workflow loader - expands imports with per-import caching.
 
 REFERENCE: #40 - Import caching mechanism for human-readable workflow files
 
 Design:
-- import: URL/path → fetch and cache to .imports/
-- Add annotation: # you see: <cache-path> <sha256:hash>
-- Cache persists across executions
-- Hash verification detects content changes
+- Each import: URL/path → cached independently to .imports/<name>
+- Each import line gets annotation: # you see: <cache-path> <sha256:hash>
+- Annotation points to the IMPORT's cache, not parent file
+- Users can directly open cache file to read imported content
 
 Usage:
     loader = WorkflowLoader(base_path)
@@ -22,14 +22,10 @@ IMPORTS_DIR = Path(".imports")
 
 
 class WorkflowLoader:
-    """Load and expand workflow imports with caching."""
+    """Load and expand workflow imports with per-import caching."""
 
     def __init__(self, base_path: Path):
-        """Initialize loader with project base path.
-
-        Args:
-            base_path: Project root directory
-        """
+        """Initialize loader with project base path."""
         self.base_path = base_path
         self.imports_dir = base_path / IMPORTS_DIR
         self.imports_dir.mkdir(exist_ok=True)
@@ -39,73 +35,69 @@ class WorkflowLoader:
 
         Args:
             workflow_path: Path to workflow file
-            cache: Whether to cache expanded content
+            cache: Whether to cache imported content
 
         Returns:
             Expanded workflow content
         """
         content = workflow_path.read_text()
-        expanded = self._expand_imports(content, workflow_path.parent)
+        expanded = self._expand_imports(content, workflow_path.parent, cache)
 
         if cache:
-            # Save to cache and add annotation
-            cache_path = self.get_cache_path(str(workflow_path), self.base_path)
-            cache_path.write_text(expanded)
-
-            # Compute hash and create annotation
-            hash_value = self.compute_hash(expanded)
-            rel_cache_path = cache_path.relative_to(self.base_path)
-
-            # Check if annotation already exists
-            if not self._has_cache_annotation(content, str(rel_cache_path)):
-                # Add annotation to source file
-                annotated = self._add_annotation_to_content(
-                    content, workflow_path, rel_cache_path, hash_value
-                )
-                workflow_path.write_text(annotated)
+            # Add annotations to source file
+            self._add_annotations_to_source(workflow_path, content)
 
         return expanded
 
-    def _has_cache_annotation(self, content: str, cache_path: str) -> bool:
-        """Check if content already has cache annotation for this path."""
-        return f"# you see: {cache_path}" in content
-
-    def _add_annotation_to_content(
-        self, content: str, workflow_path: Path, cache_path: Path, hash_value: str
-    ) -> str:
-        """Add cache annotation BEFORE import line with matching indentation."""
+    def _add_annotations_to_source(self, workflow_path: Path, content: str) -> None:
+        """Add cache annotations to source file for each import."""
         lines = content.split("\n")
         output = []
-        added = set()
+        added_annotations = {}  # import_path -> annotation
 
-        for i, line in enumerate(lines):
-            if line.strip().startswith("import:"):
-                has_annotation = False
-                if i + 1 < len(lines) and "# you see:" in lines[i + 1]:
-                    has_annotation = True
+        for line in lines:
+            stripped = line.strip()
 
-                if not has_annotation and str(workflow_path) not in added:
-                    # Match import line indentation
+            if stripped.startswith("import:"):
+                import_path = stripped.split("import:", 1)[1].strip()
+
+                # Check if annotation already exists
+                if import_path not in added_annotations:
+                    # Fetch and cache this import
+                    imported_content = self._fetch_import(
+                        import_path, workflow_path.parent
+                    )
+                    expanded = self._expand_imports(
+                        imported_content, workflow_path.parent, False
+                    )
+
+                    cache_path = self._get_import_cache_path(
+                        import_path, workflow_path.parent
+                    )
+                    cache_path.write_text(expanded)
+
+                    hash_value = self.compute_hash(expanded)
+                    rel_cache_path = cache_path.relative_to(self.base_path)
+
+                    # Create annotation
                     indent = len(line) - len(line.lstrip())
                     annotation = (
-                        " " * indent + f"# you see: <{cache_path}> <{hash_value}>"
+                        " " * indent + f"# you see: <{rel_cache_path}> <{hash_value}>"
                     )
-                    output.append(annotation)
-                    added.add(str(workflow_path))
+                    added_annotations[import_path] = annotation
+
+                # Add annotation before import line
+                output.append(added_annotations[import_path])
 
             output.append(line)
 
-        return "\n".join(output)
+        # Write back to source file
+        workflow_path.write_text("\n".join(output))
 
-    def _expand_imports(self, content: str, base_path: Path) -> str:
-        """Recursively expand imports in content.
+    def _expand_imports(self, content: str, base_path: Path, cache: bool = True) -> str:
+        """Recursively expand imports with per-import caching.
 
-        Args:
-            content: Workflow content
-            base_path: Base path for resolving relative imports
-
-        Returns:
-            Expanded content with cache annotations
+        Each import is cached independently and annotated.
         """
         lines = content.split("\n")
         output = []
@@ -114,19 +106,37 @@ class WorkflowLoader:
             stripped = line.strip()
 
             if stripped.startswith("import:"):
-                # Preserve original import line as comment
-                output.append(f"# {line}")
-
                 # Extract import path/URL
                 import_path = stripped.split("import:", 1)[1].strip()
 
-                # Fetch and expand imported content
+                # Fetch imported content
                 imported_content = self._fetch_import(import_path, base_path)
 
                 # Recursively expand nested imports
-                expanded = self._expand_imports(imported_content, base_path)
+                expanded = self._expand_imports(imported_content, base_path, cache)
 
-                # Add boundary markers
+                if cache:
+                    # Cache this import independently
+                    cache_path = self._get_import_cache_path(import_path, base_path)
+                    cache_path.write_text(expanded)
+
+                    # Compute hash for this import
+                    hash_value = self.compute_hash(expanded)
+
+                    # Get relative cache path for annotation
+                    rel_cache_path = cache_path.relative_to(self.base_path)
+
+                    # Add annotation BEFORE import line (with matching indent)
+                    indent = len(line) - len(line.lstrip())
+                    annotation = (
+                        " " * indent + f"# you see: <{rel_cache_path}> <{hash_value}>"
+                    )
+                    output.append(annotation)
+
+                # Preserve original import as comment
+                output.append(f"# {line}")
+
+                # Add boundary markers with expanded content
                 output.append(f"# === START: Imported from {import_path} ===")
                 output.extend(expanded.split("\n"))
                 output.append("# === END: Imported ===")
@@ -136,38 +146,17 @@ class WorkflowLoader:
         return "\n".join(output)
 
     def _fetch_import(self, import_path: str, base_path: Path) -> str:
-        """Fetch import content (local file or remote URL).
-
-        Args:
-            import_path: Path or URL to import
-            base_path: Base path for resolving relative paths
-
-        Returns:
-            Imported content
-        """
+        """Fetch import content (local file or remote URL)."""
         if import_path.startswith(("http://", "https://")):
             return self._fetch_remote(import_path)
         else:
             return self._fetch_local(import_path, base_path)
 
     def _fetch_local(self, path: str, base_path: Path) -> str:
-        """Fetch local file import.
-
-        Args:
-            path: Relative or absolute path
-            base_path: Base path for resolving relative paths
-
-        Returns:
-            File content
-        """
-        if Path(path).is_absolute():
-            file_path = Path(path)
-        else:
-            file_path = base_path / path
-
+        """Fetch local file import."""
+        file_path = Path(path) if Path(path).is_absolute() else base_path / path
         if not file_path.exists():
             raise FileNotFoundError(f"Import not found: {file_path}")
-
         return file_path.read_text()
 
     def _fetch_remote(self, url: str) -> str:
@@ -180,27 +169,10 @@ class WorkflowLoader:
         except Exception as e:
             raise RuntimeError(f"Failed to fetch {url}: {e}") from e
 
-    def compute_hash(self, content: str) -> str:
-        """Compute SHA-256 hash of content.
+    def _get_import_cache_path(self, import_path: str, base_path: Path) -> Path:
+        """Get cache file path for a single import.
 
-        Args:
-            content: Content to hash
-
-        Returns:
-            SHA-256 hash in format "sha256:<hex>"
-        """
-        hash_value = hashlib.sha256(content.encode("utf-8")).hexdigest()
-        return f"sha256:{hash_value}"
-
-    def get_cache_path(self, import_path: str, base_path: Path) -> Path:
-        """Get cache file path for an import.
-
-        Args:
-            import_path: Original import path/URL
-            base_path: Base path for resolving relative paths
-
-        Returns:
-            Cache file path in .imports/ directory
+        Each import is cached independently with a clear name.
         """
         if import_path.startswith(("http://", "https://")):
             # URL: create path from URL structure
@@ -221,9 +193,14 @@ class WorkflowLoader:
         cache_path.parent.mkdir(parents=True, exist_ok=True)
         return cache_path
 
+    def compute_hash(self, content: str) -> str:
+        """Compute SHA-256 hash of content."""
+        hash_value = hashlib.sha256(content.encode("utf-8")).hexdigest()
+        return f"sha256:{hash_value}"
+
     def validate_cache_annotation(self, annotation: str) -> tuple[str, str] | None:
         """Validate cache annotation format: # you see: <path> <algo:hash>."""
-        pattern = r"# you see: ([\w./-]+) <(sha256|md5):([a-f0-9]+)>"
+        pattern = r"# you see: <([\w./-]+)> <(sha256|md5):([a-f0-9]+)>"
         match = re.match(pattern, annotation.strip())
         if not match:
             return None
