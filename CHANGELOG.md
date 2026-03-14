@@ -1,5 +1,172 @@
-<!-- CHANGELOG.md -->
 # CHANGELOG
+
+
+## v0.4.0 (2026-03-14)
+
+### Chores
+
+- **scripts**: Refactor check-headers.py to extract logging module
+  ([`7d9fd76`](https://github.com/tracer-mohist/workflow-as-list/commit/7d9fd76ab420b48c400aa6cf3af9ce74bde67418))
+
+- Extract Log class to scripts/logging.py (42 lines) - Reduce check-headers.py from 286 to 239 lines
+  - Add headers to 23 files via check-headers.py run - Passes check-code-quality.py limit (256
+  lines)
+
+Why: - Modularity: logging reusable across scripts - Maintainability: smaller, focused files -
+  Consistency: all scripts under 256 line limit
+
+- **scripts**: Remove emoji from logging output
+  ([`5b0e9eb`](https://github.com/tracer-mohist/workflow-as-list/commit/5b0e9ebfde240457130471a6c594cc524bba63a9))
+
+- Replace emoji with ASCII markers in logging.py - ✓ → [OK], ✗ → [FAIL], ⚠ → [WARN], → → >> - Add
+  prompt-engineering compliance note - REFERENCE: docs/prompt-engineering/README.md (no emoji in
+  content)
+
+Why: - Cross-platform consistency (emoji rendering varies) - Tool call pollution prevention -
+  Encoding compatibility
+
+- **workflow**: Add main.workflow.list (minimal entry point)
+  ([`dfb830d`](https://github.com/tracer-mohist/workflow-as-list/commit/dfb830d2ec6e097459d505b0e92ba5b59cb07f4a))
+
+Design principles: - Design by Contract (pre/post/invariant documented) - Unix comment style (WHY
+  not WHAT) - YAGNI (no meta-layer, no auto-learning yet) - KISS (20 steps, 3 decision points)
+
+Changes: - Add workflow/main.workflow.list (minimal viable) - Remove workflow/commit.workflow.list
+  (not needed now)
+
+Why: - Need entry point for self-hosting - Complexity added when needed, not before - Comments
+  explain rationale, not mechanics
+
+### Documentation
+
+- Add Agent integration guide ([#33](https://github.com/tracer-mohist/workflow-as-list/pull/33),
+  [`9520536`](https://github.com/tracer-mohist/workflow-as-list/commit/952053602619cea922380e3686bb05a3ca5373b5))
+
+- Create docs/AGENT-INTEGRATION.md - Document progressive reading workflow - CLI integration
+  examples - API integration examples - Agent workflow pseudocode - Output storage guide - Best
+  practices and error handling
+
+Apply prompt-engineering framework: - Layer 1: Simple English, ASCII - Layer 2: Lists over tables,
+  no **, no emoji - Layer 6: LABEL: annotation format (NOTE:, REFERENCE:, TIP:)
+
+Closes: #33
+
+- Add language name (WorkflowAsList DSL)
+  ([`c12bf09`](https://github.com/tracer-mohist/workflow-as-list/commit/c12bf094eb94dbd3c5fdf6b7db4279c5f785e940))
+
+- README.md: Add language name and file extension - SYNTAX.md: Add language name and file extension
+  - No abbreviations (follows 'no shorthand' principle)
+
+Why: - Clear language identity - Consistent naming across docs - Avoids confusion (WAL has other
+  meanings) - File extension .workflow.list is descriptive
+
+- Refactor READMEs as functor definitions
+  ([`6c0cc74`](https://github.com/tracer-mohist/workflow-as-list/commit/6c0cc7421573ae224a0993f59585e262f682e300))
+
+- Remove directory tree enumeration (lazy evaluation) - Add naming rules (path/action decomposition)
+  - Add constraints (what must be true) - Add query commands (ls -R for structure)
+
+Why: - README is a functor (mapping rules), not a cache - Enumeration becomes stale (maintenance
+  debt) - Rules are stable (zero maintenance)
+
+examples/README.md: 179 → 52 lines (-127) workflow/README.md: 178 → 47 lines (-131)
+
+- Simplify README.md (point to live docs)
+  ([`ae96bb6`](https://github.com/tracer-mohist/workflow-as-list/commit/ae96bb63b57df2afcd38b76280f92914ef092602))
+
+- Remove CLI Commands list (point to workflow --help) - Remove Server API list (point to /docs) -
+  Remove Repository Structure tree (ls is better) - Add Quick Start section (Install + Explore +
+  Write) - Add Core Concept section (Progressive Reading) - Reduce from ~4400 to ~1800 bytes (60%
+  reduction)
+
+Why: - Live docs (--help, /docs) never go stale - README teaches how to explore, not what exists -
+  Follows intermediate layer principle (equivalent substitution) - Follows prompt-engineering
+  framework (lists, no **, no emoji)
+
+Result: - 2-3 minute read time - Long-term maintainable - High readability
+
+- Update README.md (pipx install, file structure, remove license)
+  ([`3519d1a`](https://github.com/tracer-mohist/workflow-as-list/commit/3519d1aa7cc7e0ad9366130259db3800529b0043))
+
+- Update Installation section: - pipx for users (GitHub Releases) - uv for contributors
+  (development) - Remove License section (LICENSE file exists) - Add Repository Structure section
+  (file navigation) - Verify API and CLI lists match code
+
+Why: - pipx is simpler for end users - Clear separation: users vs contributors - File structure
+  helps navigation - DRY principle (no duplicate license)
+
+Closes: #38
+
+- Update README.md with progressive reading model (#25, #29)
+  ([`64d04a7`](https://github.com/tracer-mohist/workflow-as-list/commit/64d04a7ccfd2638103bb5caf5b6610324c2219de))
+
+- Add execution model section (progressive reading metaphor) - Update CLI commands (exec read/next,
+  remove serve) - Add Server API reference - Update directory structure - Apply prompt-engineering
+  framework: - Layer 1: Simple English, ASCII - Layer 2: Lists over tables, no **, no emoji - Layer
+  6: LABEL: annotation format (NOTE:, REFERENCE:, TIP:)
+
+Closes: #25, #29
+
+- **examples**: Add README.md with design philosophy
+  ([`e1b7b4a`](https://github.com/tracer-mohist/workflow-as-list/commit/e1b7b4a2c2523b4441b69903d06af8ec2fe3b8a7))
+
+- Document naming convention (domain/action.workflow.list) - Explain layer separation (examples vs
+  workflow) - Record bootstrap principle and progressive design - REFERENCE: memory/2026-03-13.md
+  (naming discussion)
+
+Why: - Examples need clear guidance for users - Design decisions should be documented - Future
+  contributors need context
+
+- **workflow**: Add README.md explaining self-hosted workflows
+  ([`315b09a`](https://github.com/tracer-mohist/workflow-as-list/commit/315b09a637a6873ca35bcf33d158e04e12565e1f))
+
+- Document purpose (manage workflow-as-list development) - Explain why self-hosting (validation,
+  feedback, trust) - Describe relationship with examples/ - List current and TODO workflows
+
+Why: - workflow/ needs clear documentation - Distinguish from examples/ (self vs generic) - Future
+  contributors need context
+
+- **workflow**: Simplify README.md
+  ([`763bd35`](https://github.com/tracer-mohist/workflow-as-list/commit/763bd35fa6123320aeee3bf612b4fcff92e24705))
+
+- Remove detailed directory structure (hard to maintain) - Remove TODO list (becomes stale) - Keep
+  only core purpose and why - Focus on principles, not instructions
+
+Why: - Less maintenance burden - Core message stays relevant longer
+
+### Features
+
+- **workflow**: Add decision-capture workflow (Issue vs Docs routing)
+  ([`73e4b60`](https://github.com/tracer-mohist/workflow-as-list/commit/73e4b607c3ac82f54984d5304027a0633e0420c1))
+
+Philosophy: - Issue = Temporary decisions (short lifetime, project-specific) - Docs = Permanent
+  rules (long lifetime, general principles)
+
+Contract: - Pre: Have information/decision to record - Post: Information stored in appropriate place
+  - Invariant: No decision lost, no docs polluted with tmp
+
+Workflow: 1. Classify by lifetime and scope 2. Route to Issue (temporary) or Docs (permanent) 3.
+  Cross-reference for traceability 4. Verify recording is complete
+
+Why: - Temporary decisions need structured tracking (issues) - Permanent rules need stable storage
+  (docs) - Prevents docs clutter and decision loss
+
+Part of: Traceflux bootstrap plan (.tmp/traceflux-plan.md)
+
+### Refactoring
+
+- Move decision-capture to examples/decision/route (generic template)
+  ([`05c348c`](https://github.com/tracer-mohist/workflow-as-list/commit/05c348c7c05fc846968ddf7f3258d4f3792379a7))
+
+- Moved from workflow/ to examples/decision/route.workflow.list - Updated to be project-agnostic
+  (removes workflow-as-list specific assumptions) - Enables reuse across projects via import: URL
+
+NOTE: workflow/ is for project-specific workflows, examples/ is for reusable templates
+
+### Testing
+
+- Add integration and E2E tests (#14, #15)
+  ([`4bb9e17`](https://github.com/tracer-mohist/workflow-as-list/commit/4bb9e1742ec4dac0e83158e74c4f5c6d4da0f1d1))
 
 
 ## v0.3.0 (2026-03-13)
