@@ -1,5 +1,38 @@
-<!-- CHANGELOG.md -->
 # CHANGELOG
+
+
+## v0.6.0 (2026-03-14)
+
+### Documentation
+
+- Add comprehensive test results ([#40](https://github.com/tracer-mohist/workflow-as-list/pull/40),
+  [`68ec814`](https://github.com/tracer-mohist/workflow-as-list/commit/68ec81497a264842b1f709f43ad7c27cba6e4a6e))
+
+- .test-results.md: Full CLI + Server API + Import caching test results - 12/12 CLI commands passed
+  - 2/3 Server API endpoints passed (/health not implemented) - 3/3 Import caching features passed
+
+REFERENCE: #40 (Import caching mechanism)
+
+- Add comprehensive test results (49 tests, 93.87% pass)
+  ([`8b44288`](https://github.com/tracer-mohist/workflow-as-list/commit/8b44288b3c0b221a7354717d2c251c6b88a9b603))
+
+- 46/49 CLI commands passed - 8/9 Server API endpoints passed (/health not implemented) - 4/4 Import
+  caching features passed - 2 skipped (no execution instances)
+
+Test coverage: - 9 main commands + all subcommands + all options - All OpenAPI endpoints - Import
+  caching (local + remote)
+
+REFERENCE: #40 (Import caching mechanism)
+
+### Features
+
+- Add /health endpoint + manual exec read/next tests
+  ([`a2bbc0c`](https://github.com/tracer-mohist/workflow-as-list/commit/a2bbc0c2ad9d776219b1b9f18aded2bf971e5f6a))
+
+- Added GET /health endpoint - Manually tested exec read/next ✅ - Updated test results: 49/49 passed
+  (100%)
+
+REFERENCE: #40
 
 
 ## v0.5.6 (2026-03-14)
