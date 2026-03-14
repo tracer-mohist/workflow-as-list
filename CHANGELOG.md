@@ -1,6 +1,20 @@
 # CHANGELOG
 
 
+## v0.5.5 (2026-03-14)
+
+### Bug Fixes
+
+- Annotation format <project root:path> <hash>
+  ([#40](https://github.com/tracer-mohist/workflow-as-list/pull/40),
+  [`3be3439`](https://github.com/tracer-mohist/workflow-as-list/commit/3be343924283046e95c0a58b187cbe849c5d55d9))
+
+- Format: # you see: <project root:.imports/file> <sha256:...> - Clearer than '(project root)'
+  suffix - All metadata in angle brackets
+
+REFERENCE: #40
+
+
 ## v0.5.4 (2026-03-14)
 
 ### Bug Fixes
