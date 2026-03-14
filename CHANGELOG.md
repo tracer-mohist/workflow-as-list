@@ -1,6 +1,19 @@
 # CHANGELOG
 
 
+## v0.5.1 (2026-03-14)
+
+### Bug Fixes
+
+- Cache annotation format (before import, with brackets)
+  ([`9a7f53d`](https://github.com/tracer-mohist/workflow-as-list/commit/9a7f53db3a780d4c8cc6283aa95d5c1a1e717cc1))
+
+- Annotation before import line (not after) - Path wrapped in brackets: <path> - Format: # you see:
+  <.imports/...> <sha256:...>
+
+REFERENCE: #40 (Import caching mechanism)
+
+
 ## v0.5.0 (2026-03-14)
 
 ### Documentation
