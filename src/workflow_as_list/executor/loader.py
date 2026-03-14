@@ -172,26 +172,21 @@ class WorkflowLoader:
             raise RuntimeError(f"Failed to fetch {url}: {e}") from e
 
     def _get_import_cache_path(self, import_path: str, base_path: Path) -> Path:
-        """Get cache file path using hash-based naming (flat structure).
+        """Get cache file path using hash-only naming (security + flat structure).
 
         Design:
-        - Cache files named by content hash prefix + original filename
+        - Cache files named by content hash only (no original filename)
+        - Prevents path traversal and injection attacks
         - Flat structure (no deep directories)
         - Deduplication: same content = same cache file
-        - User reads import line for source, cache is internal storage
+        - User reads import line for source, cache filename is internal
         """
         # Fetch content to compute hash
         imported_content = self._fetch_import(import_path, base_path)
         content_hash = hashlib.sha256(imported_content.encode("utf-8")).hexdigest()[:16]
 
-        # Extract original filename for readability
-        if import_path.startswith(("http://", "https://")):
-            original_name = import_path.split("/")[-1]
-        else:
-            original_name = Path(import_path).name
-
-        # Format: <hash-prefix>-<original-name>
-        cache_filename = f"{content_hash}-{original_name}"
+        # Format: <hash-prefix>.workflow.list (no original filename for security)
+        cache_filename = f"{content_hash}.workflow.list"
         cache_path = self.imports_dir / cache_filename
 
         cache_path.parent.mkdir(parents=True, exist_ok=True)

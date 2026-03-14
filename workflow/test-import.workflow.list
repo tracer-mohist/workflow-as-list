@@ -1,8 +1,0 @@
-# test-import.workflow.list
-# Purpose: Test import caching mechanism
-
-- (start) Test Import Workflow
-  # you see: <project root:.imports/6b30743e0e2cbec3-main.workflow.list> <sha256:6b30743e0e2cbec36c0c98c0fd27814a8ba6fd4a73aed0e40d020111cc199994>
-  import: ./main.workflow.list
-
-- End
