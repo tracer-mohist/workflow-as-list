@@ -8,7 +8,7 @@ from rich.console import Console
 
 from ..config import load_config
 from ..constants import ensure_directories
-from ..executor import Executor, WorkflowParser
+from ..executor import Executor, WorkflowLoader, WorkflowParser
 from ..models import OutputType
 from ..security import compute_hash, run_security_checks
 
@@ -22,6 +22,9 @@ def print_output(type: OutputType, message: str):
 
 def check(
     file: Path = typer.Argument(..., help="Workflow file to validate and register"),
+    expanded: bool = typer.Option(
+        False, "--expanded", "-e", help="Validate expanded content (imports inlined)"
+    ),
 ):
     """Validate and register a workflow file."""
     ensure_directories()
@@ -33,7 +36,13 @@ def check(
         print_output(OutputType.ERROR, f"File not found: {file}")
         raise typer.Exit(1)
 
-    content = file.read_text()
+    # Load with import expansion if requested
+    if expanded:
+        loader = WorkflowLoader(Path.cwd())
+        content = loader.load(file)
+    else:
+        content = file.read_text()
+
     file_hash = compute_hash(file)
 
     # Run security checks (skip Layer 5 - audit status check)

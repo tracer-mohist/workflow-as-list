@@ -1,0 +1,16 @@
+# test-import.workflow.list
+# Purpose: Test import caching mechanism
+#
+# This workflow tests the import expansion feature.
+
+- (start) Test Import Workflow
+  # Import base workflow for common steps
+  import: ./main.workflow.list
+# you see: .imports/workflow/test-import.workflow.list <sha256:f67debb9e7b8d86bdfaa071c6c22a15b85a69f720fb1c55de2dde1ac838b2505>
+
+- (test) Local test step
+  - Ask: Import caching works? (yes/no)
+  - If yes: Print "SUCCESS"
+  - If no: Print "FAILED"
+
+- End
