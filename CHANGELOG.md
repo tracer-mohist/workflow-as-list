@@ -1,6 +1,23 @@
 # CHANGELOG
 
 
+## v0.6.2 (2026-03-14)
+
+### Bug Fixes
+
+- Verified duplicate annotation fix for remote imports
+  ([#40](https://github.com/tracer-mohist/workflow-as-list/pull/40),
+  [`3c7671b`](https://github.com/tracer-mohist/workflow-as-list/commit/3c7671be99e35d894ad3b3b419d380ebd31b1088))
+
+- Reset test files and verified fix works for both local and remote imports - Multiple runs of
+  'workflow check --expanded' no longer create duplicates - Fix: Check if previous line has '# you
+  see:' before adding annotation
+
+Tested: - Local import: ✅ No duplicates - Remote import: ✅ No duplicates
+
+REFERENCE: #40 (Import caching mechanism)
+
+
 ## v0.6.1 (2026-03-14)
 
 ### Bug Fixes
