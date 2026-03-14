@@ -79,11 +79,11 @@ class WorkflowLoader:
                     hash_value = self.compute_hash(expanded)
                     rel_cache_path = cache_path.relative_to(self.base_path)
 
-                    # Create annotation with explicit "project root" note
+                    # Create annotation with explicit "project root" prefix in path
                     indent = len(line) - len(line.lstrip())
                     annotation = (
                         " " * indent
-                        + f"# you see: <{rel_cache_path}> (project root) <{hash_value}>"
+                        + f"# you see: <project root:{rel_cache_path}> <{hash_value}>"
                     )
                     added_annotations[import_path] = annotation
 
@@ -131,7 +131,7 @@ class WorkflowLoader:
                     indent = len(line) - len(line.lstrip())
                     annotation = (
                         " " * indent
-                        + f"# you see: <{rel_cache_path}> (project root) <{hash_value}>"
+                        + f"# you see: <project root:{rel_cache_path}> <{hash_value}>"
                     )
                     output.append(annotation)
 
@@ -203,8 +203,8 @@ class WorkflowLoader:
         return f"sha256:{hash_value}"
 
     def validate_cache_annotation(self, annotation: str) -> tuple[str, str] | None:
-        """Validate cache annotation format: # you see: <path> (project root) <algo:hash>."""
-        pattern = r"# you see: <([\w./-]+)> \(project root\) <(sha256|md5):([a-f0-9]+)>"
+        """Validate cache annotation format: # you see: <project root:path> <algo:hash>."""
+        pattern = r"# you see: <project root:([\w./-]+)> <(sha256|md5):([a-f0-9]+)>"
         match = re.match(pattern, annotation.strip())
         if not match:
             return None

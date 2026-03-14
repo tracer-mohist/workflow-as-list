@@ -1,7 +1,0 @@
-# test-remote-import.workflow.list
-# Purpose: Test remote URL import caching
-
-- (start) Test Remote Import
-  import: https://raw.githubusercontent.com/tracer-mohist/workflow-as-list/refs/heads/main/examples/git/commit.workflow.list
-
-- End
