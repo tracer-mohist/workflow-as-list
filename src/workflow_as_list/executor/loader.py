@@ -79,10 +79,11 @@ class WorkflowLoader:
                     hash_value = self.compute_hash(expanded)
                     rel_cache_path = cache_path.relative_to(self.base_path)
 
-                    # Create annotation
+                    # Create annotation with explicit "project root" note
                     indent = len(line) - len(line.lstrip())
                     annotation = (
-                        " " * indent + f"# you see: <{rel_cache_path}> <{hash_value}>"
+                        " " * indent
+                        + f"# you see: <{rel_cache_path}> (project root) <{hash_value}>"
                     )
                     added_annotations[import_path] = annotation
 
@@ -129,7 +130,8 @@ class WorkflowLoader:
                     # Add annotation BEFORE import line (with matching indent)
                     indent = len(line) - len(line.lstrip())
                     annotation = (
-                        " " * indent + f"# you see: <{rel_cache_path}> <{hash_value}>"
+                        " " * indent
+                        + f"# you see: <{rel_cache_path}> (project root) <{hash_value}>"
                     )
                     output.append(annotation)
 
@@ -170,25 +172,27 @@ class WorkflowLoader:
             raise RuntimeError(f"Failed to fetch {url}: {e}") from e
 
     def _get_import_cache_path(self, import_path: str, base_path: Path) -> Path:
-        """Get cache file path for a single import.
+        """Get cache file path using hash-based naming (flat structure).
 
-        Each import is cached independently with a clear name.
+        Design:
+        - Cache files named by content hash prefix + original filename
+        - Flat structure (no deep directories)
+        - Deduplication: same content = same cache file
+        - User reads import line for source, cache is internal storage
         """
+        # Fetch content to compute hash
+        imported_content = self._fetch_import(import_path, base_path)
+        content_hash = hashlib.sha256(imported_content.encode("utf-8")).hexdigest()[:16]
+
+        # Extract original filename for readability
         if import_path.startswith(("http://", "https://")):
-            # URL: create path from URL structure
-            # https://raw.githubusercontent.com/user/repo/main/file.workflow.list
-            # → .imports/raw.githubusercontent.com/user/repo/main/file.workflow.list
-            url_parts = (
-                import_path.replace("https://", "").replace("http://", "").split("/")
-            )
-            cache_path = self.imports_dir / "/".join(url_parts)
+            original_name = import_path.split("/")[-1]
         else:
-            # Local path: preserve relative structure
-            if Path(import_path).is_absolute():
-                rel_path = Path(import_path).relative_to(base_path)
-            else:
-                rel_path = Path(import_path)
-            cache_path = self.imports_dir / rel_path
+            original_name = Path(import_path).name
+
+        # Format: <hash-prefix>-<original-name>
+        cache_filename = f"{content_hash}-{original_name}"
+        cache_path = self.imports_dir / cache_filename
 
         cache_path.parent.mkdir(parents=True, exist_ok=True)
         return cache_path
@@ -199,8 +203,8 @@ class WorkflowLoader:
         return f"sha256:{hash_value}"
 
     def validate_cache_annotation(self, annotation: str) -> tuple[str, str] | None:
-        """Validate cache annotation format: # you see: <path> <algo:hash>."""
-        pattern = r"# you see: <([\w./-]+)> <(sha256|md5):([a-f0-9]+)>"
+        """Validate cache annotation format: # you see: <path> (project root) <algo:hash>."""
+        pattern = r"# you see: <([\w./-]+)> \(project root\) <(sha256|md5):([a-f0-9]+)>"
         match = re.match(pattern, annotation.strip())
         if not match:
             return None
